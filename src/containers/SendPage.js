@@ -30,7 +30,8 @@ class SendPage extends Component {
       neoLinkConnected: false,
       net: 'http://35.192.230.39:5000/',
       contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
-      sourcePrivateKey: 'L2idY1t6QzBxMQGag2BfyfBCzUxwUf33Dhj458Et8PQWUT7XMZpA'
+      sourcePrivateKey: 'L2idY1t6QzBxMQGag2BfyfBCzUxwUf33Dhj458Et8PQWUT7XMZpA',
+      txId: ''
 		};
   }
 
@@ -65,6 +66,15 @@ class SendPage extends Component {
 		this.setState({ amountToSend: e.target.value });
   }
 
+
+  handleNeolinkResponse = (event) => {
+    if (event.data && event.data.msg === 'sendInvokeResponse') {
+      this.setState({
+        txId: event.data.result.txid
+      })
+    }
+  }
+
   initiateDeposit() {
     const privateKey = Neon.create.privateKey()
     const escrowAccount = new wallet.Account(this.state.privateKey)
@@ -81,10 +91,13 @@ class SendPage extends Component {
       }
     }, "*");
 
-    // todo: we need to handle success and errors
+    // todo: remove on unmount
+    window.addEventListener("message", this.handleNeolinkResponse, false);
   }
 
 	render() {
+    const { txId } = this.state;
+
 		return (
       <div>
         <h1 className="page-title">Send NEO or GAS</h1>
@@ -149,6 +162,10 @@ class SendPage extends Component {
                 disabled={!this.state.amountToSendIsValid || !this.state.neoLinkConnected}
                 onClick={() => this.initiateDeposit()}
               >Send Now</Button>
+
+              <div>
+                Success when id shows here: { txId }
+              </div>
             </form>
           </Col>
         </Grid>

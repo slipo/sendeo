@@ -14,8 +14,6 @@ import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js
 
 import './ClaimPage.css';
 
-
-
 class ClaimPage extends Component {
   constructor(props) {
 		super(props);
