@@ -111,14 +111,14 @@ class SendPage extends Component {
             }
             <form>
               <FormGroup
-                controlId="formBasicText"
+                controlId="sendForm"
                 validationState={this.isValidAmountToSend()}
               >
                 <ControlLabel>How much would you like to send?</ControlLabel>
                 <FormControl
                   type="text"
                   value={this.state.amountToSend}
-                  placeholder="Enter text"
+                  placeholder=""
                   onChange={this.handleChangeToAmount}
                   bsSize="large"
                 />
