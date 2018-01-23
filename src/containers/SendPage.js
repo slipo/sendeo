@@ -6,39 +6,37 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap'
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
+import Neon, { wallet } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
 import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
 
-import CheckExtension from '../components/CheckExtension'
 import CheckLoggedIn from '../components/CheckLoggedIn'
 import './SendPage.css'
 
 configureAnchors({ offset: -80, scrollDuration: 500 })
 
 class SendPage extends Component {
-  constructor(props) {
-	  super(props)
-
-    this.isValidAmountToSend = this.isValidAmountToSend.bind(this)
-    this.handleChangeToAmount = this.handleChangeToAmount.bind(this)
-    this.setAssetType = this.setAssetType.bind(this)
-    this.initiateDeposit = this.initiateDeposit.bind(this)
-
-    this.state = {
-      amountToSend: 1,
-      amountToSendIsValid: true,
-      assetType: 'NEO',
-      neoLinkConnected: true,
-      net: 'http://35.192.230.39:5000/',
-      contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
-      sourcePrivateKey: '',
-      txId: '',
-      success: false,
-    }
+  state = {
+    amountToSend: 1,
+    amountToSendIsValid: true,
+    assetType: 'NEO',
+    extensionState: {
+      neoLinkConnected: null,
+      isLoggedIn: null,
+      address: null,
+    },
+    net: 'http://35.192.230.39:5000/',
+    contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
+    sourcePrivateKey: '',
+    txId: '',
+    depositSuccess: false,
   }
 
-  setAssetType(asset) {
+  setExtensionState = (neoLinkConnected, isLoggedIn, address) => {
+    this.setState({ extensionState: { neoLinkConnected, isLoggedIn, address } })
+  }
+
+  setAssetType = (asset) => {
     this.setState({ assetType: asset })
   }
 
@@ -51,40 +49,49 @@ class SendPage extends Component {
     return (x | 0) === x
   }
 
-  isValidAmountToSend() {
-    const amountToSend = this.state.amountToSend
-    if (this.state.assetType === 'GAS' && (amountToSend == 0 || !(!isNaN(parseFloat(amountToSend)) && isFinite(amountToSend)))) {
-      this.state.amountToSendIsValid !== false ? this.setState({ amountToSendIsValid: false }) : null
+  isValidAmountToSend = () => {
+    const { amountToSend, assetType, amountToSendIsValid } = this.state
+
+    if (assetType === 'GAS' && (amountToSend === 0 || !(!isNaN(parseFloat(amountToSend)) && isFinite(amountToSend)))) {
+      if (amountToSendIsValid !== false) {
+        this.setState({ amountToSendIsValid: false })
+      }
+
       return 'error'
     } else if (this.state.assetType === 'NEO' && !this.isInt(amountToSend)) {
-      this.state.amountToSendIsValid !== false ? this.setState({ amountToSendIsValid: false }) : null
+      if (amountToSendIsValid !== false) {
+        this.setState({ amountToSendIsValid: false })
+      }
+
       return 'error'
     } else {
-      this.state.amountToSendIsValid !== true ? this.setState({ amountToSendIsValid: true }) : null
+      if (amountToSendIsValid !== true) {
+        this.setState({ amountToSendIsValid: true })
+      }
+
       return null
     }
   }
 
-  handleChangeToAmount(e) {
+  handleChangeToAmount = (e) => {
     this.setState({ amountToSend: e.target.value })
   }
 
-  handleNeolinkResponse(event) {
-    console.log(event)
-    if (event.data === 'sendInvokeResponse') {
+  handleNeolinkResponse = (event) => {
+    if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
       this.setState({
         txId: event.data.result.txid,
-        success: true,
+        depositSuccess: true,
       })
     }
   }
 
-  initiateDeposit() {
+  initiateDeposit = () => {
     const recipientPrivateKey = Neon.create.privateKey()
     const escrowAccount = new wallet.Account(this.state.privateKey)
 
     window.postMessage({
-      type: 'FROM_PAGE',
+      type: 'NEOLINK_SEND_INVOKE',
       text: {
         scriptHash: this.state.contractScriptHash,
         operation: 'deposit',
@@ -100,7 +107,15 @@ class SendPage extends Component {
   }
 
   render() {
-    const { txId } = this.state
+    const {
+      txId,
+      extensionState,
+      assetType,
+      amountToSend,
+      amountToSendIsValid,
+      depositSuccess,
+      privateKey,
+    } = this.state
 
     return (
       <div>
@@ -176,8 +191,7 @@ class SendPage extends Component {
                 </div>
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
-                <CheckExtension />
-                <CheckLoggedIn />
+                <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState }/>
                 <div className='panel panel-default'>
                   <div className='panel-heading'>
                     <h3 className='panel-title'>How much would you like to send?</h3>
@@ -191,25 +205,25 @@ class SendPage extends Component {
                       >
                         <FormControl
                           type='text'
-                          value={ this.state.amountToSend }
+                          value={ amountToSend }
                           placeholder=''
                           onChange={ this.handleChangeToAmount }
                           bsSize='large'
                         />
                         <FormControl.Feedback />
-                        { this.state.assetType == 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
+                        { assetType === 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
                       </FormGroup>
 
                       <ButtonGroup justified>
                         <Button
                           href='#'
                           onClick={ () => this.setAssetType('NEO') }
-                          active={ this.state.assetType === 'NEO' }
+                          active={ assetType === 'NEO' }
                         >Send NEO</Button>
                         <Button
                           href='#'
                           onClick={ () => this.setAssetType('GAS') }
-                          active={ this.state.assetType === 'GAS' }
+                          active={ assetType === 'GAS' }
                         >Send GAS</Button>
                       </ButtonGroup>
 
@@ -220,30 +234,30 @@ class SendPage extends Component {
                           bsStyle='primary'
                           bsSize='large'
                           block
-                          disabled={ !this.state.amountToSendIsValid || !this.state.neoLinkConnected }
+                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected }
                           onClick={ () => this.initiateDeposit() }
                         >Deposit Now</Button>
                         <small>By clicking the submit button below, you are acknowledging agreement that you will be
                         sending your own assets blah blah blah.</small>
                       </div>
 
-                      { this.state.depositSuccess &&
+                      { depositSuccess &&
                         <div className='alert alert-success success-container text-center'>
                           <p className='lead'>Deposit Successful!</p>
                           <hr />
 
                           <dl className='dl-horizontal'>
                             <dt>Tx ID:</dt>
-                            <dd className='text-left'><a href='#'>{ this.state.txId }</a></dd>
+                            <dd className='text-left'><a href='#'>{ txId }</a></dd>
                             <dt>Asset:</dt>
-                            <dd className='text-left'><a href='#'>{ this.state.assetType }</a></dd>
+                            <dd className='text-left'><a href='#'>{ assetType }</a></dd>
                             <dt>Quantity:</dt>
-                            <dd className='text-left'><a href='#'>{ this.state.amountToSend }</a></dd>
+                            <dd className='text-left'><a href='#'>{ amountToSend }</a></dd>
                           </dl>
                           <hr />
 
                           <p>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
-                          <pre>https://sendneo.com/claim/{ this.state.privateKey }</pre>
+                          <pre>https://sendneo.com/claim/{ privateKey }</pre>
 
                           <p className='small'>Don't lose this, you can't get it back. But just in case, in one weeks time, if this deposit hasn't been claimed, we will send it back to you.</p>
 

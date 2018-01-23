@@ -5,6 +5,7 @@
   "dependencies": {
     "@cityofzion/neon-js": "^3.1.0",
     "bootstrap": "^3.3.7",
+    "prop-types": "^15.6.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.0",
     "react-dom": "^16.2.0",
