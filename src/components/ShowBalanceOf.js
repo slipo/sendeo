@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js';
+import React, { Component } from 'react'
+import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
 
 class ShowTotalAllTime extends Component {
   state = {
     balanceNeo: '',
     errorMsg: '',
-    isLoading: true
+    isLoading: true,
   }
 
   componentDidMount() {
     const { sourcePrivateKey, contractScriptHash, net } = this.props
     const gasAssetId = '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'
 
-    this.getBalance(sourcePrivateKey, contractScriptHash, net);
+    this.getBalance(sourcePrivateKey, contractScriptHash, net)
   }
 
   getBalance = (sourcePrivateKey, contractScriptHash, net) => {
@@ -20,12 +20,12 @@ class ShowTotalAllTime extends Component {
 
     console.log(sourceAccount.scriptHash)
     const query = Neon.create.query({
-      'method' : 'getstorage',
-      'params' : [
+      'method': 'getstorage',
+      'params': [
         contractScriptHash,
         // Todo, the first thing here *should* be sourceAccount.scriptHash. Wrong key is in the contract.
-        u.reverseHex(contractScriptHash) + u.reverseHex('602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7')
-      ]
+        u.reverseHex(contractScriptHash) + u.reverseHex('602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'),
+      ],
     })
 
     api.neonDB.getRPCEndpoint(net)
@@ -37,7 +37,7 @@ class ShowTotalAllTime extends Component {
               this.setState({
                 balanceNeo: u.fixed82num(res.result),
                 errorMsg: '',
-                isLoading: false
+                isLoading: false,
               })
             }
           })
@@ -46,7 +46,7 @@ class ShowTotalAllTime extends Component {
         this.setState({
           totalAllTimeNeo: '',
           errorMsg: e.message,
-          isLoading: false
+          isLoading: false,
         })
         console.log(e)
       })
@@ -68,8 +68,8 @@ class ShowTotalAllTime extends Component {
       <div>
         Total balance GAS: { content }
       </div>
-    );
+    )
   }
 }
 
-export default ShowTotalAllTime;
+export default ShowTotalAllTime

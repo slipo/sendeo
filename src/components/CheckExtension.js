@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 class CheckExtension extends Component {
-
   handleNeolinkResponse = (event) => {
     console.log('in handleNeolinkResponse', event)
     if (event.data && event.data.type === 'GET_EXTENSION_STATUS_RESPONSE') {
@@ -13,11 +12,11 @@ class CheckExtension extends Component {
   componentDidMount = () => {
     console.log('componentDidMount')
     window.postMessage({
-      type: "GET_EXTENSION_STATUS"
-    }, "*");
+      type: 'GET_EXTENSION_STATUS',
+    }, '*')
 
     // todo: remove on unmount
-    window.addEventListener("message", this.handleNeolinkResponse, false);
+    window.addEventListener('message', this.handleNeolinkResponse, false)
   }
 
   render() {
@@ -25,8 +24,8 @@ class CheckExtension extends Component {
       <div >
         TODO: check extension.
       </div>
-    );
+    )
   }
 }
 
-export default CheckExtension;
+export default CheckExtension

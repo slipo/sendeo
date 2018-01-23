@@ -1,182 +1,271 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
-  Alert,
   Button,
   ButtonGroup,
-  Col,
-  ControlLabel,
   FormControl,
   FormGroup,
-  Grid,
-  HelpBlock
-} from 'react-bootstrap';
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js';
+  HelpBlock,
+} from 'react-bootstrap'
+import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
+import Sticky from 'react-stickynode'
+import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
 
-import './SendPage.css';
+import CheckExtension from '../components/CheckExtension'
+import CheckLoggedIn from '../components/CheckLoggedIn'
+import './SendPage.css'
+
+configureAnchors({ offset: -80, scrollDuration: 500 })
 
 class SendPage extends Component {
-	constructor(props) {
-		super(props);
+  constructor(props) {
+	  super(props)
 
-    this.isValidAmountToSend = this.isValidAmountToSend.bind(this);
-    this.handleChangeToAmount = this.handleChangeToAmount.bind(this);
-    this.setAssetType = this.setAssetType.bind(this);
-    this.initiateDeposit = this.initiateDeposit.bind(this);
+    this.isValidAmountToSend = this.isValidAmountToSend.bind(this)
+    this.handleChangeToAmount = this.handleChangeToAmount.bind(this)
+    this.setAssetType = this.setAssetType.bind(this)
+    this.initiateDeposit = this.initiateDeposit.bind(this)
 
-		this.state = {
+    this.state = {
       amountToSend: 1,
       amountToSendIsValid: true,
-      typeOfAsset: 'NEO',
-      neoLinkConnected: false,
+      assetType: 'NEO',
+      neoLinkConnected: true,
       net: 'http://35.192.230.39:5000/',
       contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
-      sourcePrivateKey: 'L2idY1t6QzBxMQGag2BfyfBCzUxwUf33Dhj458Et8PQWUT7XMZpA',
-      txId: ''
-		};
+      sourcePrivateKey: '',
+      txId: '',
+      success: false,
+    }
   }
 
   setAssetType(asset) {
-    this.setState({typeOfAsset: asset});
+    this.setState({ assetType: asset })
   }
 
   isInt(value) {
-    var x;
+    let x
     if (isNaN(value)) {
-      return false;
+      return false
     }
-    x = parseFloat(value);
-    return (x | 0) === x;
+    x = parseFloat(value)
+    return (x | 0) === x
   }
 
   isValidAmountToSend() {
-    const amountToSend = this.state.amountToSend;
-		if (this.state.typeOfAsset === 'GAS' && (amountToSend == 0 || !(!isNaN(parseFloat(amountToSend)) && isFinite(amountToSend)))) {
-      this.state.amountToSendIsValid !== false ? this.setState({amountToSendIsValid: false}) : null;
-      return 'error';
-    } else if (this.state.typeOfAsset === 'NEO' && !this.isInt(amountToSend)) {
-      this.state.amountToSendIsValid !== false ? this.setState({amountToSendIsValid: false}) : null;
-      return 'error';
+    const amountToSend = this.state.amountToSend
+    if (this.state.assetType === 'GAS' && (amountToSend == 0 || !(!isNaN(parseFloat(amountToSend)) && isFinite(amountToSend)))) {
+      this.state.amountToSendIsValid !== false ? this.setState({ amountToSendIsValid: false }) : null
+      return 'error'
+    } else if (this.state.assetType === 'NEO' && !this.isInt(amountToSend)) {
+      this.state.amountToSendIsValid !== false ? this.setState({ amountToSendIsValid: false }) : null
+      return 'error'
     } else {
-      this.state.amountToSendIsValid !== true ? this.setState({amountToSendIsValid: true}) : null;
-      return null;
+      this.state.amountToSendIsValid !== true ? this.setState({ amountToSendIsValid: true }) : null
+      return null
     }
-	}
-
-	handleChangeToAmount(e) {
-		this.setState({ amountToSend: e.target.value });
   }
 
+  handleChangeToAmount(e) {
+    this.setState({ amountToSend: e.target.value })
+  }
 
-  handleNeolinkResponse = (event) => {
-    if (event.data && event.data.msg === 'sendInvokeResponse') {
+  handleNeolinkResponse(event) {
+    console.log(event)
+    if (event.data === 'sendInvokeResponse') {
       this.setState({
-        txId: event.data.result.txid
+        txId: event.data.result.txid,
+        success: true,
       })
     }
   }
 
   initiateDeposit() {
-    const privateKey = Neon.create.privateKey()
+    const recipientPrivateKey = Neon.create.privateKey()
     const escrowAccount = new wallet.Account(this.state.privateKey)
 
     window.postMessage({
-      type: "FROM_PAGE",
+      type: 'FROM_PAGE',
       text: {
         scriptHash: this.state.contractScriptHash,
         operation: 'deposit',
-        arg1: escrowAccount,
+        arg1: escrowAccount.scriptHash,
         arg2: '',
-        assetType: this.state.typeOfAsset,
-        assetAmount: this.state.amountToSend
-      }
-    }, "*");
+        assetType: this.state.assetType,
+        assetAmount: this.state.amountToSend,
+      },
+    }, '*')
 
     // todo: remove on unmount
-    window.addEventListener("message", this.handleNeolinkResponse, false);
+    window.addEventListener('message', this.handleNeolinkResponse, false)
   }
 
-	render() {
-    const { txId } = this.state;
+  render() {
+    const { txId } = this.state
 
-		return (
+    return (
       <div>
-        <h1 className="page-title">Send NEO or GAS</h1>
-        <Grid>
-          <Col xs={12} md={6}>
-            <p className="lead">1. Choose how much you want to send</p>
-            <p>more detailed info</p>
-            <hr />
-            <p className="lead">2. Send using NeoLink</p>
-            <p>more detailed info on how to get neolink if not already</p>
-            <hr />
-            <p className="lead">3. Share the unique URL </p>
-            <p>email it etc</p>
-            <hr />
-            <p className="lead">4. They click the link and tell it where to go!</p>
-            <p>give their account address and send and the contract does the rest.</p>
-          </Col>
-          <Col xs={12} md={6}>
-            { !this.state.neoLinkConnected &&
-              <Alert bsStyle="warning">
-                <strong>Please Unlock NeoLink</strong>
-                <p>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</p>
-              </Alert>
-            }
-            <form>
-              <FormGroup
-                controlId="sendForm"
-                validationState={this.isValidAmountToSend()}
-              >
-                <ControlLabel>How much would you like to send?</ControlLabel>
-                <FormControl
-                  type="text"
-                  value={this.state.amountToSend}
-                  placeholder=""
-                  onChange={this.handleChangeToAmount}
-                  bsSize="large"
-                />
-                <FormControl.Feedback />
-                <HelpBlock></HelpBlock>
-              </FormGroup>
+        <header className='header' id='header'>
+          <div className='container'>
+            <figure className='animated fadeInDown delay-07s'>
+              <iframe width='560' height='315' src='https://www.youtube.com/embed/8PYKOo_jgJo?rel=0&amp;controls=0' frameBorder='0' allow='autoplay; encrypted-media' allowFullScreen />
+            </figure>
+            <h1 className='animated fadeInDown delay-07s'>The easiest way to share NEO and GAS with others</h1>
+            <ul className='we-create animated fadeInUp delay-1s'>
+              <li>It only takes a minute.</li>
+            </ul>
+            <a className='link animated fadeInUp delay-1s servicelink' href='#get-started'>Get Started</a>
+          </div>
+        </header>
 
-              <ButtonGroup justified>
-                <Button
-                  href="#"
-                  onClick={() => this.setAssetType('NEO')}
-                  active={this.state.typeOfAsset === 'NEO' ? true : false}
-                >Send NEO</Button>
-                <Button
-                  href="#"
-                  onClick={() => this.setAssetType('GAS')}
-                  active={this.state.typeOfAsset === 'GAS' ? true : false}
-                >Send GAS</Button>
-              </ButtonGroup>
+        <Sticky>
+          <nav className='main-nav-outer'>
+            <div className='container'>
+              <ul className='main-nav'>
+                <li className='small-logo'><a href='#header'>SEND NEO</a></li>
+              </ul>
+              <a className='res-nav_click' href='#'>
+                <i className='fa-bars' />
+              </a>
+            </div>
+          </nav>
+        </Sticky>
 
-              <p class="small">By clicking the submit button below, you are acknowledging agreement that you will be
-              sending your own assets blah blah blah.</p>
-
-              <Button
-                bsStyle="primary"
-                bsSize="large"
-                block
-                disabled={!this.state.amountToSendIsValid || !this.state.neoLinkConnected}
-                onClick={() => this.initiateDeposit()}
-              >Send Now</Button>
-
-              <div>
-                Success when id shows here: { txId }
+        <section className='main-section'>
+          <div className='container'>
+            <ScrollableAnchor id={ 'get-started' } offset={ '400' }>
+              <h2>How it Works</h2>
+            </ScrollableAnchor>
+            <h6>Send NEO is a smart contract that serves as a temporary escrow account that can be claimed by others.</h6>
+            <div className='row'>
+              <div className='col-sm-7 wow fadeInLeft delay-05s'>
+                <div className='service-list'>
+                  <div className='service-list-col1'>
+                    <i className='fa-paper-plane' />
+                  </div>
+                  <div className='service-list-col2'>
+                    <h3>1. Send NEO or GAS using NeoLink</h3>
+                    <p>Be sure NeoLink is unlocked and choose the amount of NEO or GAS you want to send.</p>
+                  </div>
+                </div>
+                <div className='service-list'>
+                  <div className='service-list-col1'>
+                    <i className='fa-bullhorn' />
+                  </div>
+                  <div className='service-list-col2'>
+                    <h3>2. Share the secret URL with the recipient</h3>
+                    <p>Once the deposit has been made, we will give you a URL that will be able to unlock the assets.</p>
+                  </div>
+                </div>
+                <div className='service-list'>
+                  <div className='service-list-col1'>
+                    <i className='fa-address-card-o' />
+                  </div>
+                  <div className='service-list-col2'>
+                    <h3>3. The recipient says where to send it</h3>
+                    <p>They provide the smart contract with a wallet address and claim their gift.</p>
+                  </div>
+                </div>
+                <div className='service-list'>
+                  <div className='service-list-col1'>
+                    <i className='fa-money' />
+                  </div>
+                  <div className='service-list-col2'>
+                    <h3>4. Profit</h3>
+                    <p>It really is that easy.</p>
+                  </div>
+                </div>
               </div>
-            </form>
-          </Col>
-        </Grid>
+              <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
+                <CheckExtension />
+                <CheckLoggedIn />
+                <div className='panel panel-default'>
+                  <div className='panel-heading'>
+                    <h3 className='panel-title'>How much would you like to send?</h3>
+                  </div>
+                  <div className='panel-body'>
+                    <form>
+                      <FormGroup
+                        controlId='sendForm'
+                        validationState={ this.isValidAmountToSend() }
+                        style={ { 'minHeight': '100px' } }
+                      >
+                        <FormControl
+                          type='text'
+                          value={ this.state.amountToSend }
+                          placeholder=''
+                          onChange={ this.handleChangeToAmount }
+                          bsSize='large'
+                        />
+                        <FormControl.Feedback />
+                        { this.state.assetType == 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
+                      </FormGroup>
+
+                      <ButtonGroup justified>
+                        <Button
+                          href='#'
+                          onClick={ () => this.setAssetType('NEO') }
+                          active={ this.state.assetType === 'NEO' }
+                        >Send NEO</Button>
+                        <Button
+                          href='#'
+                          onClick={ () => this.setAssetType('GAS') }
+                          active={ this.state.assetType === 'GAS' }
+                        >Send GAS</Button>
+                      </ButtonGroup>
+
+                      <hr />
+
+                      <div className='button-container'>
+                        <Button
+                          bsStyle='primary'
+                          bsSize='large'
+                          block
+                          disabled={ !this.state.amountToSendIsValid || !this.state.neoLinkConnected }
+                          onClick={ () => this.initiateDeposit() }
+                        >Deposit Now</Button>
+                        <small>By clicking the submit button below, you are acknowledging agreement that you will be
+                        sending your own assets blah blah blah.</small>
+                      </div>
+
+                      { this.state.depositSuccess &&
+                        <div className='alert alert-success success-container text-center'>
+                          <p className='lead'>Deposit Successful!</p>
+                          <hr />
+
+                          <dl className='dl-horizontal'>
+                            <dt>Tx ID:</dt>
+                            <dd className='text-left'><a href='#'>{ this.state.txId }</a></dd>
+                            <dt>Asset:</dt>
+                            <dd className='text-left'><a href='#'>{ this.state.assetType }</a></dd>
+                            <dt>Quantity:</dt>
+                            <dd className='text-left'><a href='#'>{ this.state.amountToSend }</a></dd>
+                          </dl>
+                          <hr />
+
+                          <p>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
+                          <pre>https://sendneo.com/claim/{ this.state.privateKey }</pre>
+
+                          <p className='small'>Don't lose this, you can't get it back. But just in case, in one weeks time, if this deposit hasn't been claimed, we will send it back to you.</p>
+
+                        </div>
+                      }
+                    </form>
+                  </div>
+                </div>
+              </figure>
+            </div>
+          </div>
+        </section>
+
         <pre>
           <code>
             { JSON.stringify(this.state, null, 2) }
           </code>
         </pre>
+
       </div>
-    );
-	}
+    )
+  }
 }
 
-export default SendPage;
+export default SendPage

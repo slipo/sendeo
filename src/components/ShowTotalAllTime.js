@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js';
+import React, { Component } from 'react'
+import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
 
 class ShowTotalAllTime extends Component {
   state = {
     '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7': '',
     'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b': '',
     errorMsg: '',
-    isLoading: true
+    isLoading: true,
   }
 
   gasAssetId = '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'
@@ -14,17 +14,17 @@ class ShowTotalAllTime extends Component {
 
   componentDidMount() {
     const { contractScriptHash, net } = this.props
-    this.getTotalAllTime(contractScriptHash, this.gasAssetId, net);
-    this.getTotalAllTime(contractScriptHash, this.neoAssetId, net);
+    this.getTotalAllTime(contractScriptHash, this.gasAssetId, net)
+    this.getTotalAllTime(contractScriptHash, this.neoAssetId, net)
   }
 
   getTotalAllTime = (contractScriptHash, assetId, net) => {
     const query = Neon.create.query({
-      'method' : 'getstorage',
-      'params' : [
+      'method': 'getstorage',
+      'params': [
         contractScriptHash,
-        u.str2hexstring('totalAllTime') + u.reverseHex(assetId)
-      ]
+        u.str2hexstring('totalAllTime') + u.reverseHex(assetId),
+      ],
     })
 
     api.neonDB.getRPCEndpoint(net)
@@ -35,7 +35,7 @@ class ShowTotalAllTime extends Component {
             if (res.result) {
               const newState = {
                 errorMsg: '',
-                isLoading: false
+                isLoading: false,
               }
               newState[assetId] = u.fixed82num(res.result)
               console.log(newState)
@@ -47,7 +47,7 @@ class ShowTotalAllTime extends Component {
         this.setState({
           assetId: '',
           errorMsg: e.message,
-          isLoading: false
+          isLoading: false,
         })
         console.log(e)
       })
@@ -69,8 +69,8 @@ class ShowTotalAllTime extends Component {
       <div>
         Total Deposited: { content }
       </div>
-    );
+    )
   }
 }
 
-export default ShowTotalAllTime;
+export default ShowTotalAllTime

@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 class CheckLoggedIn extends Component {
   render() {
     return (
-      <div >
+      <div>
         TODO: check loggedin.
       </div>
-    );
+    )
   }
 }
 
-export default CheckLoggedIn;
+export default CheckLoggedIn

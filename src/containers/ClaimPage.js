@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import {
   Alert,
   Button,
@@ -8,21 +8,21 @@ import {
   FormControl,
   FormGroup,
   Grid,
-  HelpBlock
-} from 'react-bootstrap';
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js';
+  HelpBlock,
+} from 'react-bootstrap'
+import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
 
-import './ClaimPage.css';
+import './ClaimPage.css'
 
 class ClaimPage extends Component {
   constructor(props) {
-		super(props);
+    super(props)
 
-    this.isValidAisValidDestinationAddressddress = this.isValidDestinationAddress.bind(this);
-    this.handleChangeToDestinationAddress = this.handleChangeToDestinationAddress.bind(this);
-    this.sendAssets = this.sendAssets.bind(this);
+    this.isValidAisValidDestinationAddressddress = this.isValidDestinationAddress.bind(this)
+    this.handleChangeToDestinationAddress = this.handleChangeToDestinationAddress.bind(this)
+    this.sendAssets = this.sendAssets.bind(this)
 
-		this.state = {
+    this.state = {
       destinationAddress: '',
       destinationAddressIsValid: false,
       neoLinkConnected: false,
@@ -31,31 +31,31 @@ class ClaimPage extends Component {
       sourcePrivateKey: 'L2idY1t6QzBxMQGag2BfyfBCzUxwUf33Dhj458Et8PQWUT7XMZpA',
       txId: '',
       status: '',
-      errorMsg: ''
-		};
+      errorMsg: '',
+    }
   }
 
   isValidDestinationAddress = () => {
     if (this.state.destinationAddress && this.state.destinationAddress.length > 0) {
-      this.state.destinationAddressIsValid !== true ? this.setState({ destinationAddressIsValid: true }) : null;
-      return true;
+      this.state.destinationAddressIsValid !== true ? this.setState({ destinationAddressIsValid: true }) : null
+      return true
     }
 
-    this.state.destinationAddressIsValid !== false ? this.setState({ destinationAddressIsValid: false }) : null;
-    return false;
+    this.state.destinationAddressIsValid !== false ? this.setState({ destinationAddressIsValid: false }) : null
+    return false
   };
 
   handleChangeToDestinationAddress = (event) => {
-    this.setState({ destinationAddress: event.target.value });
+    this.setState({ destinationAddress: event.target.value })
   };
 
   sendAssets = (destAddr) => {
-    destAddr = 'AKMPCtNYBVNPMbeZCvJ9Jn4z1bdDcG6KhP';
+    destAddr = 'AKMPCtNYBVNPMbeZCvJ9Jn4z1bdDcG6KhP'
 
     this.setState({
       txId: '',
       status: 'loading',
-      errorMsg: ''
+      errorMsg: '',
     })
 
     const { sourcePrivateKey, contractScriptHash, net } = this.state
@@ -84,10 +84,10 @@ class ClaimPage extends Component {
         balances = values[1]
 
         const query = Neon.create.query({
-          'method' : 'getcontractstate',
-          'params' : [
-            contractScriptHash
-          ]
+          'method': 'getcontractstate',
+          'params': [
+            contractScriptHash,
+          ],
         })
 
         return query.execute(endpt)
@@ -100,8 +100,8 @@ class ClaimPage extends Component {
           {
             assetId: '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
             value: transferAmount,
-            scriptHash: wallet.getScriptHashFromAddress(destAddr)
-          }
+            scriptHash: wallet.getScriptHashFromAddress(destAddr),
+          },
         ]
 
         const invoke = sourceAccount.scriptHash
@@ -114,10 +114,10 @@ class ClaimPage extends Component {
           attributes: [
             {
               usage: 32,
-              data: u.reverseHex(sourceAccount.scriptHash)
-            }
+              data: u.reverseHex(sourceAccount.scriptHash),
+            },
           ],
-          privateKey: sourceAccount.privateKey
+          privateKey: sourceAccount.privateKey,
         }
 
         const unsignedTx = new tx.Transaction(txConfig).calculate(balances)
@@ -128,11 +128,11 @@ class ClaimPage extends Component {
         })
       })
       .then((c) => {
-        console.log("Config object just before sending", c)
+        console.log('Config object just before sending', c)
         signedTx = c.tx
         signedTx.scripts.unshift({
           invocationScript: '00' + signedTx.scripts[0].invocationScript,
-          verificationScript: script
+          verificationScript: script,
         })
         return rpc.Query.sendRawTransaction(signedTx).execute(endpt)
       })
@@ -141,13 +141,13 @@ class ClaimPage extends Component {
           this.setState({
             txId: signedTx.hash,
             status: 'success',
-            errorMsg: ''
+            errorMsg: '',
           })
         } else {
           this.setState({
             txId: '',
             status: 'error',
-            errorMsg: 'NEO node returned false, but no error message.'
+            errorMsg: 'NEO node returned false, but no error message.',
           })
         }
         console.log(res)
@@ -157,61 +157,61 @@ class ClaimPage extends Component {
         this.setState({
           txId: '',
           status: 'error',
-          errorMsg: e.message
+          errorMsg: e.message,
         })
       })
   }
 
   render() {
-		return (
+    return (
       <div>
-        <h1 className="page-title">Send NEO or GAS</h1>
+        <h1 className='page-title'>Send NEO or GAS</h1>
         <Grid>
-          <Col xs={12} md={6}>
-            <p className="lead">HEYO! You just received NEO/GAS</p>
+          <Col xs={ 12 } md={ 6 }>
+            <p className='lead'>HEYO! You just received NEO/GAS</p>
             <p>Whoever gave you this link was kind enough to give you XXX NEO/GAS. To collect it is easy...</p>
             <hr />
-            <p className="lead">1. Download and Install the NEON Wallet which will store your new tokens.</p>
-            <p><a href="http://neonwallet.com/" target="_blank">http://neonwallet.com/</a> has everything you need.</p>
+            <p className='lead'>1. Download and Install the NEON Wallet which will store your new tokens.</p>
+            <p><a href='http://neonwallet.com/' target='_blank'>http://neonwallet.com/</a> has everything you need.</p>
             <hr />
-            <p className="lead">2. Open the app and choose to Create a New Wallet</p>
+            <p className='lead'>2. Open the app and choose to Create a New Wallet</p>
             <p>Follow the instruction on screen. Be sure not to lose stuff.</p>
             <hr />
-            <p className="lead">3. Give us your public address and we will send you everything!</p>
-            <p></p>
+            <p className='lead'>3. Give us your public address and we will send you everything!</p>
+            <p />
           </Col>
-          <Col xs={12} md={6}>
+          <Col xs={ 12 } md={ 6 }>
             { !this.state.neoLinkConnected &&
-              <Alert bsStyle="warning">
+              <Alert bsStyle='warning'>
                 <strong>Please Unlock NeoLink</strong>
                 <p>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</p>
               </Alert>
             }
             <form>
               <FormGroup
-                controlId="claimForm"
-                validationState={this.isValidDestinationAddress()}
+                controlId='claimForm'
+                validationState={ this.isValidDestinationAddress() }
               >
                 <ControlLabel>The Public NEO Wallet Address</ControlLabel>
                 <FormControl
-                  type="text"
-                  value={this.state.destinationAddress}
-                  placeholder=""
-                  onChange={this.handleChangeToDestinationAddress}
-                  bsSize="large"
+                  type='text'
+                  value={ this.state.destinationAddress }
+                  placeholder=''
+                  onChange={ this.handleChangeToDestinationAddress }
+                  bsSize='large'
                 />
                 <FormControl.Feedback />
-                <HelpBlock></HelpBlock>
+                <HelpBlock />
               </FormGroup>
 
-              <p class="small">By clicking the submit button below, you are acknowledging agreement that blah blah blah.</p>
+              <p className='small'>By clicking the submit button below, you are acknowledging agreement that blah blah blah.</p>
 
               <Button
-                bsStyle="primary"
-                bsSize="large"
+                bsStyle='primary'
+                bsSize='large'
                 block
-                disabled={!this.state.destinationAddressIsValid || !this.state.neoLinkConnected}
-                onClick={() => this.sendAssets()}
+                disabled={ !this.state.destinationAddressIsValid || !this.state.neoLinkConnected }
+                onClick={ () => this.sendAssets() }
               >Claim Your NEO</Button>
             </form>
           </Col>
@@ -222,8 +222,8 @@ class ClaimPage extends Component {
           </code>
         </pre>
       </div>
-    );
-	}
+    )
+  }
 }
 
-export default ClaimPage;
+export default ClaimPage
