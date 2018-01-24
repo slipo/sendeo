@@ -2,3 +2,11 @@
     text-align: center;
     margin: 10px 0 20px;
 }
+
+.sticky-inner-wrapper {
+  z-index: 9;
+}
+
+.button-container {
+  margin-bottom: 25px;
+}

@@ -34,25 +34,35 @@ class CheckLoggedIn extends Component {
     const { extensionState } = this.props
 
     let content
+    let statusText
+    let statusClass
 
     console.log('extensionState', extensionState)
     if (extensionState.isLoggedIn === true) {
-      content = `address: ${extensionState.address}`
-    } else if (extensionState.isInstalled === true) {
+      statusClass = 'success'
+      statusText = 'Installed and Unlocked'
       content = (
-        <Alert bsStyle='warning'>
-          <strong>Please Unlock NeoLink</strong>
-          <p>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</p>
-        </Alert>
+        <p>Wallet Address: <strong>{extensionState.address}</strong></p>
+      )
+    } else if (extensionState.neoLinkConnected === true) {
+      statusClass = 'warning'
+      statusText = 'Installed but not Unlocked'
+      content = (
+        <p>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</p>
       )
     } else if (extensionState.isInstalled === false) {
-      content = 'please install'
+      statusClass = 'warning'
+      statusText = 'Not Installed'
+      content = (
+        <p>Please install the NeoLink browser extension and then refresh this page.</p>
+      )
     } else {
-      content = 'loading'
+      statusText = 'Connecting to NeoLink...'
     }
 
     return (
-      <div>
+      <div className='neo-status well text-center'>
+        <h4>NeoLink Status: <strong><span className={ `text-${statusClass}` }>{statusText}</span></strong></h4>
         { content }
       </div>
     )

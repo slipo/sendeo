@@ -28,6 +28,7 @@ class SendPage extends Component {
     net: 'http://35.192.230.39:5000/',
     contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
     sourcePrivateKey: '',
+    escrowPrivatekey: '',
     txId: '',
     depositSuccess: false,
   }
@@ -77,18 +78,11 @@ class SendPage extends Component {
     this.setState({ amountToSend: e.target.value })
   }
 
-  handleNeolinkResponse = (event) => {
-    if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
-      this.setState({
-        txId: event.data.result.txid,
-        depositSuccess: true,
-      })
-    }
-  }
-
   initiateDeposit = () => {
-    const recipientPrivateKey = Neon.create.privateKey()
-    const escrowAccount = new wallet.Account(this.state.privateKey)
+    const escrowPrivateKey = Neon.create.privateKey()
+    this.setState({ escrowPrivateKey })
+
+    const escrowAccount = new wallet.Account(escrowPrivateKey)
 
     window.postMessage({
       type: 'NEOLINK_SEND_INVOKE',
@@ -104,6 +98,21 @@ class SendPage extends Component {
 
     // todo: remove on unmount
     window.addEventListener('message', this.handleNeolinkResponse, false)
+  }
+
+  handleNeolinkResponse = (event) => {
+    console.log(event)
+    if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
+      this.setState({
+        txId: event.data.result.txid,
+        depositSuccess: true,
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.handleNeolinkResponse)
+    window.removeEventListener('message', this.handleNeolinkResponse)
   }
 
   render() {
@@ -191,7 +200,8 @@ class SendPage extends Component {
                 </div>
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
-                <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState }/>
+                <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
+
                 <div className='panel panel-default'>
                   <div className='panel-heading'>
                     <h3 className='panel-title'>How much would you like to send?</h3>
@@ -209,6 +219,7 @@ class SendPage extends Component {
                           placeholder=''
                           onChange={ this.handleChangeToAmount }
                           bsSize='large'
+                          className='text-right'
                         />
                         <FormControl.Feedback />
                         { assetType === 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
@@ -219,11 +230,13 @@ class SendPage extends Component {
                           href='#'
                           onClick={ () => this.setAssetType('NEO') }
                           active={ assetType === 'NEO' }
+                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
                         >Send NEO</Button>
                         <Button
                           href='#'
                           onClick={ () => this.setAssetType('GAS') }
                           active={ assetType === 'GAS' }
+                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
                         >Send GAS</Button>
                       </ButtonGroup>
 
@@ -234,11 +247,11 @@ class SendPage extends Component {
                           bsStyle='primary'
                           bsSize='large'
                           block
-                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected }
+                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
                           onClick={ () => this.initiateDeposit() }
                         >Deposit Now</Button>
-                        <small>By clicking the submit button below, you are acknowledging agreement that you will be
-                        sending your own assets blah blah blah.</small>
+                        <p className='text-center'><small>By clicking the submit button below, you are acknowledging agreement that you will be
+                        sending your own assets blah blah blah.</small></p>
                       </div>
 
                       { depositSuccess &&
@@ -247,7 +260,7 @@ class SendPage extends Component {
                           <hr />
 
                           <dl className='dl-horizontal'>
-                            <dt>Tx ID:</dt>
+                            <dt className='address-link'>Tx ID:</dt>
                             <dd className='text-left'><a href='#'>{ txId }</a></dd>
                             <dt>Asset:</dt>
                             <dd className='text-left'><a href='#'>{ assetType }</a></dd>
@@ -257,9 +270,9 @@ class SendPage extends Component {
                           <hr />
 
                           <p>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
-                          <pre>https://sendneo.com/claim/{ privateKey }</pre>
+                          <pre>https://sendneo.com/claim/{ this.state.escrowPrivateKey }</pre>
 
-                          <p className='small'>Don't lose this, you can't get it back. But just in case, in one weeks time, if this deposit hasn't been claimed, we will send it back to you.</p>
+                          <p className='small'>Don't lose this, you can't get it back. But just in case, in one week's time, if this deposit hasn't been claimed, we will send it back to you.</p>
 
                         </div>
                       }
