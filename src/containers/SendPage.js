@@ -6,10 +6,11 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap'
-import Neon, { wallet } from '@cityofzion/neon-js'
+import { wallet, u } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
 import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
 
+import OwnedEscrowList from '../components/OwnedEscrowList'
 import CheckLoggedIn from '../components/CheckLoggedIn'
 import './SendPage.css'
 
@@ -25,8 +26,7 @@ class SendPage extends Component {
       isLoggedIn: null,
       address: null,
     },
-    net: 'http://35.192.230.39:5000/',
-    contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
+
     sourcePrivateKey: '',
     escrowPrivatekey: '',
     txId: '',
@@ -79,17 +79,18 @@ class SendPage extends Component {
   }
 
   initiateDeposit = () => {
-    const escrowPrivateKey = Neon.create.privateKey()
-    this.setState({ escrowPrivateKey })
+    const { contractScriptHash } = this.props
+    // AZs5Ymrso1Lu7sdhmpAspuYkbhnFKDpd1d
+    const escrowAccount = new wallet.Account('L2BWaxRz5iztJuaomgzXBjCVPCHpnn6Pydsma7A9WBh2U3CT1kne') // todo: don't hardcode!
 
-    const escrowAccount = new wallet.Account(escrowPrivateKey)
+    this.setState({ escrowPrivateKey: escrowAccount.WIF })
 
     window.postMessage({
       type: 'NEOLINK_SEND_INVOKE',
       text: {
-        scriptHash: this.state.contractScriptHash,
+        scriptHash: contractScriptHash,
         operation: 'deposit',
-        arg1: escrowAccount.scriptHash,
+        arg1: u.reverseHex(escrowAccount.scriptHash),
         arg2: '',
         assetType: this.state.assetType,
         assetAmount: this.state.amountToSend,
@@ -125,6 +126,8 @@ class SendPage extends Component {
       depositSuccess,
       privateKey,
     } = this.state
+
+    const { contractScriptHash, net } = this.props
 
     return (
       <div>
@@ -200,6 +203,13 @@ class SendPage extends Component {
                 </div>
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
+                { extensionState.address &&
+                  <OwnedEscrowList
+                    address={ extensionState.address }
+                    contractScriptHash={ contractScriptHash }
+                    net={ net }
+                  />
+                }
                 <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
 
                 <div className='panel panel-default'>

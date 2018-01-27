@@ -10,13 +10,17 @@ import '../knight-theme/animate.css'
 import '../knight-theme/responsive.css'
 
 import './App.css'
+import { net, contractScriptHash } from './AppConfig'
 
 const App = () => (
   <Router>
     <Switch>
-      <Route exact path='/' component={ SendPage } />
-      <Route path='/claim/:key' component={ ClaimPage } />
-      <Route component={ SendPage } />
+      <Route path='/claim/:key' render={
+        props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+      />
+      <Route
+        render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+      />
     </Switch>
   </Router>
 )

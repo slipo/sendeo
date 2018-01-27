@@ -1,20 +1,18 @@
 import React, { Component } from 'react'
 import {
-  Alert,
   Button,
-  ButtonGroup,
-  Col,
-  ControlLabel,
   FormControl,
   FormGroup,
-  Grid,
   HelpBlock,
 } from 'react-bootstrap'
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
-import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
+import ScrollableAnchor from 'react-scrollable-anchor'
+
+import { neonJsClaim } from '../lib/invocations'
 
 import CheckLoggedIn from '../components/CheckLoggedIn'
+import ShowBalanceOf from '../components/ShowBalanceOf'
+import ShowTotalAllTime from '../components/ShowTotalAllTime'
 
 import './ClaimPage.css'
 
@@ -36,8 +34,6 @@ class ClaimPage extends Component {
         isLoggedIn: null,
         address: null,
       },
-      net: 'http://35.192.230.39:5000/',
-      contractScriptHash: '77730992315f984e7a3cf281c001e2c34b6d4982',
       escrowPrivateKey: props.match.params.key,
       txId: '',
       status: '',
@@ -71,88 +67,14 @@ class ClaimPage extends Component {
       errorMsg: '',
     })
 
-    const { escrowPrivateKey, contractScriptHash, net, destinationAddress } = this.state
+    const { escrowPrivateKey, destinationAddress } = this.state
+    const { contractScriptHash, net } = this.props
 
-    const escrowAccount = new wallet.Account(escrowPrivateKey)
-    console.log(escrowAccount)
-    const rpcEndpointPromise = api.neonDB.getRPCEndpoint(net)
-
-    const contractAddr = wallet.getAddressFromScriptHash(contractScriptHash)
-    const balancePromise = api.neonDB.getBalance(net, contractAddr)
-
-    // todo, transfer all.
-    const transferAmount = 0.00001
-
-    // todo, check gas cost?
-    const gasCost = 0
-
-    let signedTx
-    let endpt
-    let balances
-    let script
-
-    return Promise.all([rpcEndpointPromise, balancePromise])
-      .then((values) => {
-        endpt = values[0]
-        balances = values[1]
-
-        const query = Neon.create.query({
-          'method': 'getcontractstate',
-          'params': [
-            contractScriptHash,
-          ],
-        })
-
-        return query.execute(endpt)
-      })
-      .then((contractState) => {
-        console.log('contractState', contractState)
-        script = contractState.result.script
-
-        const intents = [
-          {
-            assetId: '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
-            value: transferAmount,
-            scriptHash: wallet.getScriptHashFromAddress(destinationAddress),
-          },
-        ]
-
-        const invoke = escrowAccount.scriptHash
-        const txConfig = {
-          type: 128,
-          version: 0,
-          outputs: intents,
-          script: typeof (invoke) === 'string' ? invoke : sc.createScript(invoke),
-          gas: gasCost,
-          attributes: [
-            {
-              usage: 32,
-              data: u.reverseHex(escrowAccount.scriptHash),
-            },
-          ],
-          privateKey: escrowAccount.privateKey,
-        }
-
-        const unsignedTx = new tx.Transaction(txConfig).calculate(balances)
-
-        const promise = Promise.resolve(unsignedTx.sign(txConfig.privateKey))
-        return promise.then((signedTx) => {
-          return Object.assign(txConfig, { tx: signedTx })
-        })
-      })
-      .then((c) => {
-        console.log('Config object just before sending', c)
-        signedTx = c.tx
-        signedTx.scripts.unshift({
-          invocationScript: '00' + signedTx.scripts[0].invocationScript,
-          verificationScript: script,
-        })
-        return rpc.Query.sendRawTransaction(signedTx).execute(endpt)
-      })
+    neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash)
       .then((res) => {
         if (res.result === true) {
           this.setState({
-            txId: signedTx.hash,
+            txId: res.txid,
             status: 'success',
             errorMsg: '',
           })
@@ -176,6 +98,9 @@ class ClaimPage extends Component {
   }
 
   render() {
+    const { escrowPrivateKey } = this.state
+    const { contractScriptHash, net } = this.props
+
     return (
       <div>
         <header className='header' id='header'>
@@ -216,6 +141,9 @@ class ClaimPage extends Component {
                 <br />
                 <p>Next follow the simple steps to create a new address. Copy and paste that address into the form below, submit and in seconds the money will appear in your wallet.</p>
                 <br />
+
+                <ShowBalanceOf escrowPrivateKey={ escrowPrivateKey } contractScriptHash={ contractScriptHash } net={ net } />
+                <ShowTotalAllTime contractScriptHash={ contractScriptHash } net={ net } />
                 <div className='service-list'>
                   <div className='service-list-col1'>
                     <i className='fa-paper-plane' />

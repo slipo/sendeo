@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
+import { wallet, u } from '@cityofzion/neon-js'
 
-class ShowTotalAllTime extends Component {
+import { GAS_ASSET_ID } from '../lib/const'
+import { neonGetBalance } from '../lib/storage'
+
+class ShowBalanceOf extends Component {
   state = {
     balanceNeo: '',
     errorMsg: '',
@@ -9,42 +12,32 @@ class ShowTotalAllTime extends Component {
   }
 
   componentDidMount() {
-    const { sourcePrivateKey, contractScriptHash, net } = this.props
-    const gasAssetId = '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'
-
-    this.getBalance(sourcePrivateKey, contractScriptHash, net)
+    const { escrowPrivateKey, contractScriptHash, net } = this.props
+    this.getBalance(escrowPrivateKey, contractScriptHash, net)
   }
 
-  getBalance = (sourcePrivateKey, contractScriptHash, net) => {
-    const sourceAccount = new wallet.Account(sourcePrivateKey)
-
-    console.log(sourceAccount.scriptHash)
-    const query = Neon.create.query({
-      'method': 'getstorage',
-      'params': [
-        contractScriptHash,
-        // Todo, the first thing here *should* be sourceAccount.scriptHash. Wrong key is in the contract.
-        u.reverseHex(contractScriptHash) + u.reverseHex('602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'),
-      ],
-    })
-
-    api.neonDB.getRPCEndpoint(net)
-      .then((url) => {
-        const response = query.execute(url)
-          .then(res => {
-            console.log(res)
-            if (res.result) {
-              this.setState({
-                balanceNeo: u.fixed82num(res.result),
-                errorMsg: '',
-                isLoading: false,
-              })
-            }
+  getBalance = (escrowPrivateKey, contractScriptHash, net) => {
+    const escrowAccount = new wallet.Account(escrowPrivateKey)
+    neonGetBalance(escrowAccount.scriptHash, GAS_ASSET_ID, contractScriptHash, net)
+      .then(res => {
+        console.log('balance res', res)
+        if (res.result) {
+          this.setState({
+            balanceNeo: u.fixed82num(res.result),
+            errorMsg: '',
+            isLoading: false,
           })
+        } else {
+          this.setState({
+            balanceNeo: '',
+            errorMsg: 'No balance found',
+            isLoading: false,
+          })
+        }
       })
       .catch((e) => {
         this.setState({
-          totalAllTimeNeo: '',
+          balanceNeo: '',
           errorMsg: e.message,
           isLoading: false,
         })
@@ -72,4 +65,4 @@ class ShowTotalAllTime extends Component {
   }
 }
 
-export default ShowTotalAllTime
+export default ShowBalanceOf

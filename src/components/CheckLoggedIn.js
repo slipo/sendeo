@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Alert } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 
 class CheckLoggedIn extends Component {

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import Neon, { api, sc, sb, core, rpc, wallet, u, tx } from '@cityofzion/neon-js'
+import Neon, { api, u } from '@cityofzion/neon-js'
+
+import { GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
+import { neonGetTotalAllTime } from '../lib/storage'
 
 class ShowTotalAllTime extends Component {
   state = {
-    '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7': '',
-    'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b': '',
     errorMsg: '',
     isLoading: true,
   }
@@ -14,34 +15,22 @@ class ShowTotalAllTime extends Component {
 
   componentDidMount() {
     const { contractScriptHash, net } = this.props
-    this.getTotalAllTime(contractScriptHash, this.gasAssetId, net)
-    this.getTotalAllTime(contractScriptHash, this.neoAssetId, net)
+    this.getTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
+    this.getTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
   }
 
   getTotalAllTime = (contractScriptHash, assetId, net) => {
-    const query = Neon.create.query({
-      'method': 'getstorage',
-      'params': [
-        contractScriptHash,
-        u.str2hexstring('totalAllTime') + u.reverseHex(assetId),
-      ],
-    })
+    neonGetTotalAllTime(contractScriptHash, assetId, net)
+      .then(res => {
+        if (res.result) {
+          const newState = {
+            errorMsg: '',
+            isLoading: false,
+          }
 
-    api.neonDB.getRPCEndpoint(net)
-      .then((url) => {
-        const response = query.execute(url)
-          .then(res => {
-            console.log(res)
-            if (res.result) {
-              const newState = {
-                errorMsg: '',
-                isLoading: false,
-              }
-              newState[assetId] = u.fixed82num(res.result)
-              console.log(newState)
-              this.setState(newState)
-            }
-          })
+          newState[assetId] = u.fixed82num(res.result)
+          this.setState(newState)
+        }
       })
       .catch((e) => {
         this.setState({
@@ -49,12 +38,11 @@ class ShowTotalAllTime extends Component {
           errorMsg: e.message,
           isLoading: false,
         })
-        console.log(e)
       })
   }
 
   render() {
-    const { isLoading, errorMsg, totalAllTimeNeo } = this.state
+    const { isLoading, errorMsg } = this.state
 
     let content
     if (isLoading) {
@@ -62,7 +50,7 @@ class ShowTotalAllTime extends Component {
     } else if (errorMsg !== '') {
       content = `Error: ${errorMsg}`
     } else {
-      content = `neo ${this.state[this.neoAssetId]}, gas ${this.state[this.gasAssetId]}`
+      content = `neo ${this.state[NEO_ASSET_ID]}, gas ${this.state[GAS_ASSET_ID]}`
     }
 
     return (
