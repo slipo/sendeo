@@ -49,10 +49,9 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
         },
       ]
 
-      //const invoke = escrowAccount.scriptHash
       const invoke = {
         scriptHash: contractScriptHash,
-        operation: 'transfer',
+        operation: 't',
         args: [ '' ],
       }
       console.log('invoke setup')
@@ -82,14 +81,25 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
     .then((c) => {
       console.log('Config object just before sending', c)
       signedTx = c.tx
-      signedTx.scripts.unshift({
-        invocationScript: '00' + signedTx.scripts[0].invocationScript,
-        verificationScript: script,
-      })
+
+      // todo: need to fix up neon-js to know how to do this automaatically.
+      if (parseInt(contractScriptHash, 16) > parseInt(escrowAccount.scriptHash, 16)) {
+        signedTx.scripts.push({
+          invocationScript: '00' + signedTx.scripts[0].invocationScript,
+          verificationScript: script,
+        })
+      } else {
+        signedTx.scripts.unshift({
+          invocationScript: '00' + signedTx.scripts[0].invocationScript,
+          verificationScript: script,
+        })
+      }
+
       return rpc.Query.sendRawTransaction(signedTx).execute(endpt)
     })
     .then((res) => {
       if (res.result === true) {
+        console.log('res,', res)
         res.txid = signedTx.hash
       }
       return res

@@ -80,8 +80,7 @@ class SendPage extends Component {
 
   initiateDeposit = () => {
     const { contractScriptHash } = this.props
-    // AZs5Ymrso1Lu7sdhmpAspuYkbhnFKDpd1d
-    const escrowAccount = new wallet.Account('L2BWaxRz5iztJuaomgzXBjCVPCHpnn6Pydsma7A9WBh2U3CT1kne') // todo: don't hardcode!
+    const escrowAccount = new wallet.Account()
 
     this.setState({ escrowPrivateKey: escrowAccount.WIF })
 
