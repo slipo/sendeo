@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Button,
   FormControl,
@@ -23,17 +24,13 @@ class ClaimPage extends Component {
     this.isValidDestinationAddress = this.isValidDestinationAddress.bind(this)
     this.handleChangeToDestinationAddress = this.handleChangeToDestinationAddress.bind(this)
     this.sendAssets = this.sendAssets.bind(this)
+    this.setExtensionState = this.setExtensionState.bind(this)
 
     console.log(props)
 
     this.state = {
       destinationAddress: '',
       destinationAddressIsValid: false,
-      extensionState: {
-        neoLinkConnected: null,
-        isLoggedIn: null,
-        address: null,
-      },
       escrowPrivateKey: props.match.params.key,
       txId: '',
       status: '',
@@ -118,7 +115,9 @@ class ClaimPage extends Component {
           <nav className='main-nav-outer'>
             <div className='container'>
               <ul className='main-nav'>
-                <li className='small-logo'><a href='#header'>SEND NEO</a></li>
+                <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
+                <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
+                <li><Link to='/previousSends'>Previous Sends</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>
                 <i className='fa-bars' />
@@ -135,21 +134,14 @@ class ClaimPage extends Component {
             <h6>You need to provide a public NEO wallet address so the smart contract knows where to send to.</h6>
             <div className='row'>
               <div className='col-sm-7 wow fadeInLeft delay-05s'>
-                <p>If you haven’t handled NEO or GAS before, to claim your currency, you’ll need to take a few steps.</p>
-                <br />
-                <p>First you’ll need to download a wallet. Grab the link below to get NEON wallet.</p>
-                <br />
-                <p>Next follow the simple steps to create a new address. Copy and paste that address into the form below, submit and in seconds the money will appear in your wallet.</p>
-                <br />
+                <p className='lead'>If you don't have one already, get yourself a wallet. We recommend these guys:</p>
 
-                <ShowBalanceOf escrowPrivateKey={ escrowPrivateKey } contractScriptHash={ contractScriptHash } net={ net } />
-                <ShowTotalAllTime contractScriptHash={ contractScriptHash } net={ net } />
                 <div className='service-list'>
                   <div className='service-list-col1'>
                     <i className='fa-paper-plane' />
                   </div>
                   <div className='service-list-col2'>
-                    <h3><a href='http://neonwallet.com/' target='_blank'>NEON Wallet</a></h3>
+                    <h3><a href='http://neonwallet.com/' target='_blank' rel='noopener noreferrer'>NEON Wallet</a></h3>
                     <p>In our opinion, the best wallet out there with compatibility for NEP5 tokens.</p>
                   </div>
                 </div>
@@ -162,13 +154,14 @@ class ClaimPage extends Component {
                     <p>Simple and easy way to get a wallet that you can interact with inside Chrome.</p>
                   </div>
                 </div>
+
+                <p className='lead'>Check out this video tutorial to help guide you.</p>
+                <iframe width='560' height='315' src='https://www.youtube.com/embed/ZWZFiixYfnM?rel=0&amp;showinfo=0' frameBorder='0' allow='autoplay; encrypted-media' allowFullScreen />
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
-                <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ this.state.extensionState } />
-
                 <div className='panel panel-default'>
                   <div className='panel-heading'>
-                    <h3 className='panel-title'>What is the public NEO wallet address?</h3>
+                    <h3 className='panel-title'>What is the public wallet address that will receive this gift?</h3>
                   </div>
                   <div className='panel-body'>
                     <form>
@@ -192,14 +185,23 @@ class ClaimPage extends Component {
                           bsStyle='primary'
                           bsSize='large'
                           block
-                          disabled={ !this.state.destinationAddressIsValid || !this.state.extensionState.neoLinkConnected || !this.state.extensionState.isLoggedIn }
+                          disabled={ !this.state.destinationAddressIsValid || this.state.status === 'loading' }
                           onClick={ () => this.sendAssets() }
                         >Claim Your NEO</Button>
-                        <p className='small text-center'>By clicking the submit button below, you are acknowledging agreement that blah blah blah.</p>
+                        <p className='small text-center terms-text'>By clicking the submit button below, you are acknowledging agreement that blah blah blah.</p>
                       </div>
                     </form>
                   </div>
                 </div>
+
+                { this.state.status === 'success' &&
+                  <div className='alert alert-success'>
+                    <p className='lead'><strong>Success!</strong></p>
+                    <p>The transaction went through and can be seen <a href={ `http://35.192.230.39:5000/v2/transaction/${this.state.txId}` } target='_blank'>by clicking here.</a> You will have to wait a few seconds to let the block get processed.</p>
+                  </div>
+                }
+                <ShowBalanceOf escrowPrivateKey={ escrowPrivateKey } contractScriptHash={ contractScriptHash } net={ net } />
+                <ShowTotalAllTime contractScriptHash={ contractScriptHash } net={ net } />
               </figure>
             </div>
           </div>

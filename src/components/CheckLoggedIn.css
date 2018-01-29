@@ -1,0 +1,11 @@
+#neo-link-status-container {
+  position: absolute;
+  right: 0;
+  top: 0px;
+  padding: 5px 25px;
+  border-radius: 0;
+}
+
+#neo-link-status-container .status-title {
+  margin-bottom: 0;
+}

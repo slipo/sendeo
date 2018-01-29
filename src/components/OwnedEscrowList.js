@@ -23,6 +23,7 @@ class OwnedEscrowList extends Component {
           errorMsg: '',
           isLoading: false,
         })
+        this.props.setPreviousSendsState(results)
       })
       .catch((e) => {
         this.setState({
@@ -34,13 +35,61 @@ class OwnedEscrowList extends Component {
       })
   }
 
+  rescindPreviousSend = (previousScriptHash) => {
+    console.log('rescinding ', previousScriptHash)
+  }
+
+  renderPreviousSendRows() {
+    const { ownedEscrowScriptHashes } = this.state
+
+    let rows = []
+
+    ownedEscrowScriptHashes.map(ownedScriptHash => {
+      let dateOffset = (24 * 60 * 60 * 1000) * 7
+      let sevenDaysAgo = new Date()
+      sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
+
+      let canRescind = ownedScriptHash.created < sevenDaysAgo
+      rows.push(
+        <tr key={ ownedScriptHash.id }>
+          <td>{ownedScriptHash.id}</td>
+          <td>{ownedScriptHash.type}</td>
+          <td>{ownedScriptHash.amount}</td>
+          <td>{ownedScriptHash.created}</td>
+          <td>{ canRescind ? <a href='#' onClick={ this.rescindPreviousSend(ownedScriptHash) }>Rescind</a> : <span>Not Yet</span> }</td>
+        </tr>
+      )
+    })
+
+    return rows
+  }
+
   render() {
+    const { isLoading } = this.state
+
     return (
-      <pre>
-        <code>
-          { JSON.stringify(this.state, null, 2) }
-        </code>
-      </pre>
+      <table className='table table-striped table-hover'>
+        <thead>
+          <tr>
+            <th>TxID</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Created</th>
+            <th>Rescind</th>
+          </tr>
+        </thead>
+        <tbody>
+          { isLoading &&
+            <tr>
+              <td colSpan='4' className='text-center primary'>
+                <i className='fa fa-fw fa-spin fa-spinner' /> Checking wallet for previous sends...
+              </td>
+            </tr>
+          }
+
+          { !isLoading && this.renderPreviousSendRows() }
+        </tbody>
+      </table>
     )
   }
 }

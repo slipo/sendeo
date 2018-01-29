@@ -55,7 +55,7 @@ export function neonGetOwnedEscrowScriptHashes(ownerAddress, contractScriptHash,
               deserializedArray.push(ss.read(parseInt(itemLength, 16)))
             }
 
-            //console.log(u.ab2str(u.hexstring2ab(deserializedArray[3])))
+            // console.log(u.ab2str(u.hexstring2ab(deserializedArray[3])))
 
             return deserializedArray
           }

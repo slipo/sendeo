@@ -47,7 +47,7 @@ class ShowBalanceOf extends Component {
 
   render() {
     const { isLoading, errorMsg, balanceNeo } = this.state
-
+    console.log('--' + errorMsg + '+++' + balanceNeo)
     let content
     if (isLoading) {
       content = 'Loading balance information'

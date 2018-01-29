@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Button,
   ButtonGroup,
@@ -9,8 +10,8 @@ import {
 import { wallet, u } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
 import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
+import * as qs from 'query-string'
 
-import OwnedEscrowList from '../components/OwnedEscrowList'
 import CheckLoggedIn from '../components/CheckLoggedIn'
 import './SendPage.css'
 
@@ -31,6 +32,14 @@ class SendPage extends Component {
     escrowPrivatekey: '',
     txId: '',
     depositSuccess: false,
+  }
+
+  componentDidMount() {
+    const urlQuery = qs.parse(window.location.search)
+
+    if (urlQuery.asset) {
+      this.setState({ assetType: urlQuery.asset.toUpperCase() })
+    }
   }
 
   setExtensionState = (neoLinkConnected, isLoggedIn, address) => {
@@ -147,11 +156,14 @@ class SendPage extends Component {
           <nav className='main-nav-outer'>
             <div className='container'>
               <ul className='main-nav'>
-                <li className='small-logo'><a href='#header'>SEND NEO</a></li>
+                <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
+                <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
+                <li><Link to='/previousSends'>Previous Sends</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>
                 <i className='fa-bars' />
               </a>
+              <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
             </div>
           </nav>
         </Sticky>
@@ -202,15 +214,6 @@ class SendPage extends Component {
                 </div>
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
-                { extensionState.address &&
-                  <OwnedEscrowList
-                    address={ extensionState.address }
-                    contractScriptHash={ contractScriptHash }
-                    net={ net }
-                  />
-                }
-                <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
-
                 <div className='panel panel-default'>
                   <div className='panel-heading'>
                     <h3 className='panel-title'>How much would you like to send?</h3>
@@ -259,7 +262,7 @@ class SendPage extends Component {
                           disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
                           onClick={ () => this.initiateDeposit() }
                         >Deposit Now</Button>
-                        <p className='text-center'><small>By clicking the submit button below, you are acknowledging agreement that you will be
+                        <p className='text-center terms-text'><small>By clicking the submit button below, you are acknowledging agreement that you will be
                         sending your own assets blah blah blah.</small></p>
                       </div>
 

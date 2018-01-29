@@ -1,12 +1,20 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
+import './CheckLoggedIn.css'
+
 class CheckLoggedIn extends Component {
+  state = {
+    isLoading: true,
+  }
+
   handleNeolinkResponse = (event) => {
     const { setExtensionState } = this.props
 
     if (event.data && event.data.type === 'NEOLINK_GET_EXTENSION_STATUS_RESPONSE') {
       setExtensionState(true, event.data.result.isLoggedIn, event.data.result.address)
+      this.setState({ isLoading: false })
     }
   }
 
@@ -15,6 +23,7 @@ class CheckLoggedIn extends Component {
 
     if (extensionState.neoLinkConnected !== true) {
       setExtensionState(false, false, '')
+      this.setState({ isLoading: false })
     }
   }
 
@@ -39,30 +48,38 @@ class CheckLoggedIn extends Component {
     console.log('extensionState', extensionState)
     if (extensionState.isLoggedIn === true) {
       statusClass = 'success'
-      statusText = 'Installed and Unlocked'
+      statusText = <i className='fa fa-fw fa-check' />
       content = (
-        <p>Wallet Address: <strong>{extensionState.address}</strong></p>
+        <p className='text-right'>
+          <small>
+            <a href={ `http://35.192.230.39:5000/v2/address/balance/${extensionState.address}` } target='_blank'>View Wallet</a>
+          </small>
+        </p>
       )
     } else if (extensionState.neoLinkConnected === true) {
       statusClass = 'warning'
-      statusText = 'Installed but not Unlocked'
+      statusText = <i className='fa fa-fw fa-warning' />
       content = (
-        <p>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</p>
+        <p className='text-right'>
+          <small>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</small>
+        </p>
       )
-    } else if (extensionState.isInstalled === false) {
-      statusClass = 'warning'
-      statusText = 'Not Installed'
-      content = (
-        <p>Please install the NeoLink browser extension and then refresh this page.</p>
-      )
+    } else if (this.state.loading) {
+      statusText = <i className='fa fa-fw fa-spin fa-spinner' />
     } else {
-      statusText = 'Connecting to NeoLink...'
+      statusClass = 'danger'
+      statusText = <i className='fa fa-fw fa-exclamation-triangle' />
+      content = (
+        <p className='text-right'>
+          <small>Please install the NeoLink browser extension and then refresh this page.</small>
+        </p>
+      )
     }
 
     return (
-      <div className='neo-status well text-center'>
-        <h4>NeoLink Status: <strong><span className={ `text-${statusClass}` }>{statusText}</span></strong></h4>
-        { content }
+      <div id='neo-link-status-container' className={ `text-right alert alert-${statusClass}` }>
+        <div className='status-title lead'>NeoLink Status: <strong>{statusText}</strong></div>
+        <div className='status-content'>{ content }</div>
       </div>
     )
   }
