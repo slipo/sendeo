@@ -65,9 +65,12 @@ class PreviousSends extends Component {
             <ScrollableAnchor id={ 'get-started' } offset={ '400' }>
               <h2>Here Is a List of Your Previous Sends</h2>
             </ScrollableAnchor>
+
             <h6>If a deposit has not been claimed after 7 days, you can come to this page and rescind your send.</h6>
+
             <div className='row'>
               <div className='col-sm-6 col-sm-offset-3 wow fadeInLeft delay-05s'>
+
                 { extensionState.address &&
                   <OwnedEscrowList
                     address={ extensionState.address }

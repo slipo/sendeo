@@ -7,6 +7,7 @@ class OwnedEscrowList extends Component {
     ownedEscrowScriptHashes: null,
     errorMsg: '',
     isLoading: true,
+    previousSends: [],
   }
 
   componentDidMount() {
@@ -18,16 +19,13 @@ class OwnedEscrowList extends Component {
     neonGetOwnedEscrowScriptHashes(address, contractScriptHash, net)
       .then((results) => {
         console.log('got some!', results)
-        this.setState({
-          ownedEscrowScriptHashes: results,
-          errorMsg: '',
-          isLoading: false,
+        results.map(previousEscrowHash => {
+          console.log('getting escrow info for ', previousEscrowHash)
+          this.getEscrowInfo(previousEscrowHash, contractScriptHash, net)
         })
-        this.props.setPreviousSendsState(results)
       })
       .catch((e) => {
         this.setState({
-          ownedEscrowScriptHashes: null,
           errorMsg: e.message,
           isLoading: false,
         })
@@ -66,41 +64,39 @@ class OwnedEscrowList extends Component {
   }
 
   getEscrowInfo = (ownerScriptHash, contractScriptHash, net) => {
+    console.log(ownerScriptHash)
     neonGetEscrowInfo(ownerScriptHash, contractScriptHash, net)
-      .then((results) => {
-        console.log('got some!', results)
+      .then((result) => {
+        console.log('got some escrow info', result)
+
+        let newPreviousSends = this.state.previousSends
+        newPreviousSends.push(result)
+
+        this.setState({ previousSends: newPreviousSends, isLoading: false })
       })
       .catch((e) => {
-        // error
+        console.error(e)
       })
   }
 
   renderPreviousSendRows() {
-    const { ownedEscrowScriptHashes } = this.state
+    const { previousSends } = this.state
     const { contractScriptHash, net } = this.props
 
     let rows = []
 
-    if (ownedEscrowScriptHashes) {
-      ownedEscrowScriptHashes.map(ownedScriptHash => {
-        this.getEscrowInfo(ownedScriptHash, contractScriptHash, net)
-
-        let dateOffset = (24 * 60 * 60 * 1000) * 7
-        let sevenDaysAgo = new Date()
-        sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
-
-        let canRescind = true //ownedScriptHash.created < sevenDaysAgo
-        rows.push(
-          <tr key={ ownedScriptHash.id }>
-            <td>{ownedScriptHash.id}</td>
-            <td>{ownedScriptHash.type}</td>
-            <td>{ownedScriptHash.amount}</td>
-            <td>{ownedScriptHash.created}</td>
-            <td>{ canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(ownedScriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
-          </tr>
-        )
-      })
-    }
+    previousSends.map(previousSend => {
+      rows.push(
+        <tr key={ previousSend.txId }>
+          <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }>{previousSend.txId}</td>
+          <td>{previousSend.type}</td>
+          <td>{previousSend.amount}</td>
+          <td>{previousSend.note}</td>
+          <td>{previousSend.created}</td>
+          <td>{ previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.scriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
+        </tr>
+      )
+    })
 
     return rows
   }
@@ -115,6 +111,7 @@ class OwnedEscrowList extends Component {
             <th>TxID</th>
             <th>Type</th>
             <th>Amount</th>
+            <th>Note</th>
             <th>Created</th>
             <th>Rescind</th>
           </tr>

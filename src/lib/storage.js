@@ -61,12 +61,21 @@ export function neonGetEscrowInfo(scriptHash, contractScriptHash, net) {
           let result = false
           if (res.result) {
             result = deserializeArray(res.result)
-            console.log(u.reverseHex(result[0])) // txid
-            console.log(u.hexstring2str(result[1])) // note
-            console.log(parseInt(u.reverseHex(result[2]), 16)) // timestamp
-          }
+            let createdTime = new Date(parseInt(u.reverseHex(result[2]), 16))
+            let dateOffset = (24 * 60 * 60 * 1000) * 7
+            let sevenDaysAgo = new Date()
+            sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
 
-          console.log(result)
+            let canRescind = createdTime.created < sevenDaysAgo
+
+            result = {
+              txId: u.reverseHex(result[0]),
+              note: u.hexstring2str(result[1]),
+              created: new Date(parseInt(u.reverseHex(result[2]), 16) * 1000).toUTCString(),
+              canRescind,
+              scriptHash,
+            }
+          }
 
           return result
         })
