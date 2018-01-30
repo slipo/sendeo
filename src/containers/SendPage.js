@@ -243,13 +243,13 @@ class SendPage extends Component {
                           href='#'
                           onClick={ () => this.setAssetType('NEO') }
                           active={ assetType === 'NEO' }
-                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
+                          disabled={ !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
                         >Send NEO</Button>
                         <Button
                           href='#'
                           onClick={ () => this.setAssetType('GAS') }
                           active={ assetType === 'GAS' }
-                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
+                          disabled={ !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
                         >Send GAS</Button>
                       </ButtonGroup>
 

@@ -71,7 +71,7 @@ class CheckLoggedIn extends Component {
       statusText = <i className='fa fa-fw fa-exclamation-triangle' />
       content = (
         <p className='text-right'>
-          <small>Please install the NeoLink browser extension and then refresh this page.</small>
+          <small>Please install the <a href='https://github.com/slipo/neolink/tree/dapp'>NeoLink browser extension</a> and then refresh this page.</small>
         </p>
       )
     }
