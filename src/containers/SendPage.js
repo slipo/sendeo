@@ -93,7 +93,6 @@ class SendPage extends Component {
 
     this.setState({ escrowPrivateKey: escrowAccount.WIF })
 
-
     window.postMessage({
       type: 'NEOLINK_SEND_INVOKE',
       text: {
@@ -160,6 +159,7 @@ class SendPage extends Component {
                 <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
                 <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
                 <li><Link to='/previousSends'>Previous Sends</Link></li>
+                <li><Link to='/about'>About</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>
                 <i className='fa-bars' />
