@@ -1,6 +1,6 @@
 import Neon, { api, sc, rpc, wallet, u, tx } from '@cityofzion/neon-js'
 
-export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash) {
+export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash, txAmount) {
   console.log(`using ${escrowPrivateKey}`)
   const escrowAccount = new wallet.Account(escrowPrivateKey)
   console.log(escrowAccount)
@@ -13,7 +13,7 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
   const balancePromise = api.neonDB.getBalance(net, contractAddr)
 
   // todo, transfer all.
-  const transferAmount = 0.00001
+  const transferAmount = txAmount
 
   // todo, check gas cost?
   const gasCost = 0

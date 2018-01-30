@@ -12,8 +12,8 @@ import ScrollableAnchor from 'react-scrollable-anchor'
 import { neonJsClaim } from '../lib/invocations'
 
 import CheckLoggedIn from '../components/CheckLoggedIn'
-import ShowBalanceOf from '../components/ShowBalanceOf'
-import ShowTotalAllTime from '../components/ShowTotalAllTime'
+import GetBalanceOf from '../components/GetBalanceOf'
+import GetTotalAllTime from '../components/GetTotalAllTime'
 
 import './ClaimPage.css'
 
@@ -24,22 +24,33 @@ class ClaimPage extends Component {
     this.isValidDestinationAddress = this.isValidDestinationAddress.bind(this)
     this.handleChangeToDestinationAddress = this.handleChangeToDestinationAddress.bind(this)
     this.sendAssets = this.sendAssets.bind(this)
-    this.setExtensionState = this.setExtensionState.bind(this)
-
-    console.log(props)
 
     this.state = {
       destinationAddress: '',
       destinationAddressIsValid: false,
       escrowPrivateKey: props.match.params.key,
+      balanceLoading: true,
       txId: '',
+      txAmount: 0,
+      txCreated: '',
+      txNote: '',
+      totalAllTimeNeo: 0,
+      totalAllTimeGas: 0,
       status: '',
       errorMsg: '',
     }
   }
 
-  setExtensionState = (neoLinkConnected, isLoggedIn, address) => {
-    this.setState({ extensionState: { neoLinkConnected, isLoggedIn, address } })
+  setBalanceState = (txAmount, txCreated, txNote) => {
+    this.setState({ txAmount, txCreated, txNote, balanceLoading: false })
+  }
+
+  setGasAllTimeState = (totalAllTimeGas) => {
+    this.setState({ totalAllTimeGas: totalAllTimeGas })
+  }
+
+  setNeoAllTimeState = (totalAllTimeNeo) => {
+    this.setState({ totalAllTimeNeo: totalAllTimeNeo })
   }
 
   isValidDestinationAddress = () => {
@@ -64,10 +75,10 @@ class ClaimPage extends Component {
       errorMsg: '',
     })
 
-    const { escrowPrivateKey, destinationAddress } = this.state
+    const { escrowPrivateKey, destinationAddress, txAmount } = this.state
     const { contractScriptHash, net } = this.props
 
-    neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash)
+    neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash, txAmount)
       .then((res) => {
         if (res.result === true) {
           this.setState({
@@ -159,49 +170,89 @@ class ClaimPage extends Component {
                 <iframe width='560' height='315' src='https://www.youtube.com/embed/ZWZFiixYfnM?rel=0&amp;showinfo=0' frameBorder='0' allow='autoplay; encrypted-media' allowFullScreen />
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
-                <div className='panel panel-default'>
-                  <div className='panel-heading'>
-                    <h3 className='panel-title'>What is the public wallet address that will receive this gift?</h3>
+                { this.state.balanceLoading &&
+                  <div className='well'>
+                    <p className='text-center'><i className='fa fa-fw fa-spin fa-spinner' /> Retrieving information about this claim...</p>
                   </div>
-                  <div className='panel-body'>
-                    <form>
-                      <FormGroup
-                        controlId='claimForm'
-                        validationState={ this.isValidDestinationAddress() }
-                      >
-                        <FormControl
-                          type='text'
-                          value={ this.state.destinationAddress }
-                          placeholder=''
-                          onChange={ this.handleChangeToDestinationAddress }
-                          bsSize='large'
-                        />
-                        <FormControl.Feedback />
-                        <HelpBlock />
-                      </FormGroup>
+                }
 
-                      <div className='button-container'>
-                        <Button
-                          bsStyle='primary'
-                          bsSize='large'
-                          block
-                          disabled={ !this.state.destinationAddressIsValid || this.state.status === 'loading' }
-                          onClick={ () => this.sendAssets() }
-                        >Claim Your NEO</Button>
-                        <p className='small text-center terms-text'>By clicking the submit button below, you are acknowledging agreement that blah blah blah.</p>
-                      </div>
-                    </form>
+                { !this.state.balanceLoading && this.state.txAmount == 0 &&
+                  <div className='panel panel-danger text-left'>
+                    <div className='panel-body'>
+                      <h3>Whoops!</h3>
+                      <p className='lead text-danger'>This has already been claimed or is no longer valid. Blockchain don't lie man.</p>
+                      <p>But please, do yourself a favor and get your self a wallet. You'll thank me later.</p>
+                    </div>
                   </div>
-                </div>
+                }
+
+                { !this.state.balanceLoading && this.state.txAmount > 0 &&
+                  <div className='panel panel-default'>
+                    <div className='panel-body'>
+                      <h3>You have been sent {this.state.txAmount} GAS (TODO)!</h3>
+                      <p className='lead'>Give us a public wallet address and we will send it right over.</p>
+
+                      <form>
+                        <FormGroup
+                          controlId='claimForm'
+                          validationState={ this.isValidDestinationAddress() }
+                        >
+                          <FormControl
+                            type='text'
+                            value={ this.state.destinationAddress }
+                            placeholder='Public wallet address'
+                            onChange={ this.handleChangeToDestinationAddress }
+                            bsSize='large'
+                          />
+                          <FormControl.Feedback />
+                          <HelpBlock />
+                        </FormGroup>
+
+                        <div className='button-container'>
+                          <Button
+                            bsStyle='primary'
+                            bsSize='large'
+                            block
+                            disabled={ !this.state.destinationAddressIsValid || this.state.status === 'loading' }
+                            onClick={ () => this.sendAssets() }
+                          >Claim Your NEO</Button>
+                          <p className='small text-center terms-text'>By clicking the submit button below, you are acknowledging agreement that blah blah blah.</p>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                }
 
                 { this.state.status === 'success' &&
-                  <div className='alert alert-success'>
+                  <div className='alert alert-success text-center'>
                     <p className='lead'><strong>Success!</strong></p>
                     <p>The transaction went through and can be seen <a href={ `http://35.192.230.39:5000/v2/transaction/${this.state.txId}` } target='_blank'>by clicking here.</a> You will have to wait a few seconds to let the block get processed.</p>
                   </div>
                 }
-                <ShowBalanceOf escrowPrivateKey={ escrowPrivateKey } contractScriptHash={ contractScriptHash } net={ net } />
-                <ShowTotalAllTime contractScriptHash={ contractScriptHash } net={ net } />
+
+                { (this.state.totalAllTimeNeo > 0 || this.state.totalAllTimeGas > 0) && (this.state.totalAllTimeGas > this.state.txAmount || this.state.totalAllTimeNeo > this.state.txAmount) &&
+                  <div className='panel panel-default text-center'>
+                    <div className='panel-heading'>
+                      <h3>Wow, did you know that...</h3>
+                    </div>
+                    <div className='panel-body'>
+                      <p>You are not the first to receive GAS from this person. In fact they have now sent {this.state.totalAllTimeGas} GAS in total! TODO</p>
+                    </div>
+                  </div>
+                }
+
+                <GetBalanceOf
+                  escrowPrivateKey={ escrowPrivateKey }
+                  contractScriptHash={ contractScriptHash }
+                  net={ net }
+                  setBalanceState={ this.setBalanceState }
+                />
+                <GetTotalAllTime
+                  contractScriptHash={ contractScriptHash }
+                  net={ net }
+                  setGasAllTimeState={ this.setGasAllTimeState }
+                  setNeoAllTimeState={ this.setNeoAllTimeState }
+                />
               </figure>
             </div>
           </div>
