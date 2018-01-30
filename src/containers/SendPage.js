@@ -93,13 +93,14 @@ class SendPage extends Component {
 
     this.setState({ escrowPrivateKey: escrowAccount.WIF })
 
+
     window.postMessage({
       type: 'NEOLINK_SEND_INVOKE',
       text: {
         scriptHash: contractScriptHash,
         operation: 'deposit',
         arg1: u.reverseHex(escrowAccount.scriptHash),
-        arg2: '',
+        arg2: u.str2hexstring('Awesome Note!'),
         assetType: this.state.assetType,
         assetAmount: this.state.amountToSend,
       },

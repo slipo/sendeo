@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { neonGetOwnedEscrowScriptHashes } from '../lib/storage'
+import { neonGetOwnedEscrowScriptHashes, neonGetEscrowInfo } from '../lib/storage'
 
 class OwnedEscrowList extends Component {
   state = {
@@ -35,31 +35,72 @@ class OwnedEscrowList extends Component {
       })
   }
 
+  handleRescindGiftResponse = (event) => {
+    if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
+      this.setState({
+        txId: event.data.result.txid,
+        success: true,
+      })
+
+      window.removeEventListener('click', this.handleRescindGiftResponse)
+    }
+  }
+
   rescindPreviousSend = (previousScriptHash) => {
+    const { contractScriptHash } = this.props
+
+    window.postMessage({
+      type: 'NEOLINK_SEND_INVOKE',
+      text: {
+        scriptHash: contractScriptHash,
+        operation: 'rescindGift',
+        arg1: previousScriptHash,
+        arg2: '',
+        assetType: 'GAS',
+        assetAmount: 0.00000001, // We need to send a drop of GAS to make it go through. todo add this to NeoLink.
+      },
+    }, '*')
+
+    window.addEventListener('message', this.handleRescindGiftResponse, false)
     console.log('rescinding ', previousScriptHash)
+  }
+
+  getEscrowInfo = (ownerScriptHash, contractScriptHash, net) => {
+    neonGetEscrowInfo(ownerScriptHash, contractScriptHash, net)
+      .then((results) => {
+        console.log('got some!', results)
+      })
+      .catch((e) => {
+        // error
+      })
   }
 
   renderPreviousSendRows() {
     const { ownedEscrowScriptHashes } = this.state
+    const { contractScriptHash, net } = this.props
 
     let rows = []
 
-    ownedEscrowScriptHashes.map(ownedScriptHash => {
-      let dateOffset = (24 * 60 * 60 * 1000) * 7
-      let sevenDaysAgo = new Date()
-      sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
+    if (ownedEscrowScriptHashes) {
+      ownedEscrowScriptHashes.map(ownedScriptHash => {
+        this.getEscrowInfo(ownedScriptHash, contractScriptHash, net)
 
-      let canRescind = ownedScriptHash.created < sevenDaysAgo
-      rows.push(
-        <tr key={ ownedScriptHash.id }>
-          <td>{ownedScriptHash.id}</td>
-          <td>{ownedScriptHash.type}</td>
-          <td>{ownedScriptHash.amount}</td>
-          <td>{ownedScriptHash.created}</td>
-          <td>{ canRescind ? <a href='#' onClick={ this.rescindPreviousSend(ownedScriptHash) }>Rescind</a> : <span>Not Yet</span> }</td>
-        </tr>
-      )
-    })
+        let dateOffset = (24 * 60 * 60 * 1000) * 7
+        let sevenDaysAgo = new Date()
+        sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
+
+        let canRescind = true //ownedScriptHash.created < sevenDaysAgo
+        rows.push(
+          <tr key={ ownedScriptHash.id }>
+            <td>{ownedScriptHash.id}</td>
+            <td>{ownedScriptHash.type}</td>
+            <td>{ownedScriptHash.amount}</td>
+            <td>{ownedScriptHash.created}</td>
+            <td>{ canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(ownedScriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
+          </tr>
+        )
+      })
+    }
 
     return rows
   }
