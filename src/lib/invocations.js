@@ -1,38 +1,41 @@
 import Neon, { api, sc, rpc, wallet, u, tx } from '@cityofzion/neon-js'
+import axios from 'axios'
 
-export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash, txAmount) {
-  console.log(`using ${escrowPrivateKey}`)
+export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash, receivedTxId) {
   const escrowAccount = new wallet.Account(escrowPrivateKey)
-  console.log(escrowAccount)
 
-  console.log(1, new wallet.Account().WIF)
-
-  const rpcEndpointPromise = api.neonDB.getRPCEndpoint(net)
-
-  const contractAddr = wallet.getAddressFromScriptHash(contractScriptHash)
-  const balancePromise = api.neonDB.getBalance(net, contractAddr)
-
-  // todo, transfer all.
-  const transferAmount = txAmount
-
-  // todo, check gas cost?
   const gasCost = 0
 
   let signedTx
   let endpt
-  let balances
   let script
 
-  return Promise.all([rpcEndpointPromise, balancePromise])
-    .then((values) => {
-      endpt = values[0]
-      balances = values[1]
+  const inputs = []
+  const intents = []
+
+  return api.neonDB.getRPCEndpoint(net)
+    .then((result) => {
+      endpt = result
+      return axios.get(`${net}/v2/transaction/${receivedTxId}`)
+    })
+    .then((transactionsResponse) => {
+      const vouts = transactionsResponse.data.vout
+      console.log(transactionsResponse.data)
+      for (const vout of vouts) {
+        if (vout.address === wallet.getAddressFromScriptHash(contractScriptHash)) {
+          inputs.push({ prevHash: receivedTxId, prevIndex: vout.n })
+
+          intents.push({
+            assetId: vout.asset.slice(2),
+            value: vout.value,
+            scriptHash: wallet.getScriptHashFromAddress(destinationAddress),
+          })
+        }
+      }
 
       const query = Neon.create.query({
         'method': 'getcontractstate',
-        'params': [
-          contractScriptHash,
-        ],
+        'params': [ contractScriptHash ],
       })
 
       return query.execute(endpt)
@@ -41,23 +44,13 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
       console.log('contractState', contractState)
       script = contractState.result.script
 
-      const intents = [
-        {
-          assetId: '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
-          value: transferAmount,
-          scriptHash: wallet.getScriptHashFromAddress(destinationAddress),
-        },
-      ]
-
       const invoke = {
         scriptHash: contractScriptHash,
-        operation: 't',
-        args: [ '' ],
       }
       console.log('invoke setup')
       const txConfig = {
-        type: 209,
-        version: 1,
+        type: 128,
+        version: 0,
         outputs: intents,
         script: typeof (invoke) === 'string' ? invoke : sc.createScript(invoke),
         gas: gasCost,
@@ -70,8 +63,8 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
         privateKey: escrowAccount.privateKey,
       }
 
-      console.log('txConfig', txConfig)
-      const unsignedTx = new tx.Transaction(txConfig).calculate(balances)
+      const unsignedTx = new tx.Transaction(txConfig)
+      unsignedTx.inputs = inputs
 
       const promise = Promise.resolve(unsignedTx.sign(txConfig.privateKey))
       return promise.then((signedTx) => {
@@ -82,17 +75,14 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
       console.log('Config object just before sending', c)
       signedTx = c.tx
 
-      // todo: need to fix up neon-js to know how to do this automaatically.
+      const contractScriptSigning = {
+        invocationScript: '00' + signedTx.scripts[0].invocationScript,
+        verificationScript: script,
+      }
       if (parseInt(contractScriptHash, 16) > parseInt(escrowAccount.scriptHash, 16)) {
-        signedTx.scripts.push({
-          invocationScript: '00' + signedTx.scripts[0].invocationScript,
-          verificationScript: script,
-        })
+        signedTx.scripts.push(contractScriptSigning)
       } else {
-        signedTx.scripts.unshift({
-          invocationScript: '00' + signedTx.scripts[0].invocationScript,
-          verificationScript: script,
-        })
+        signedTx.scripts.unshift(contractScriptSigning)
       }
 
       return rpc.Query.sendRawTransaction(signedTx).execute(endpt)

@@ -10,8 +10,8 @@ import Sticky from 'react-stickynode'
 import ScrollableAnchor from 'react-scrollable-anchor'
 
 import { neonJsClaim } from '../lib/invocations'
+import { GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
 
-import CheckLoggedIn from '../components/CheckLoggedIn'
 import GetBalanceOf from '../components/GetBalanceOf'
 import GetTotalAllTime from '../components/GetTotalAllTime'
 
@@ -29,6 +29,7 @@ class ClaimPage extends Component {
       destinationAddress: '',
       destinationAddressIsValid: false,
       escrowPrivateKey: props.match.params.key,
+      receivedTxId: props.match.params.receivedTxId,
       balanceLoading: true,
       txId: '',
       txAmount: 0,
@@ -38,11 +39,12 @@ class ClaimPage extends Component {
       totalAllTimeGas: 0,
       status: '',
       errorMsg: '',
+      assets: null,
     }
   }
 
-  setBalanceState = (txAmount, txCreated, txNote) => {
-    this.setState({ txAmount, txCreated, txNote, balanceLoading: false })
+  setBalanceState = (assets, txCreated, txNote) => {
+    this.setState({ assets, txCreated, txNote, balanceLoading: false })
   }
 
   setGasAllTimeState = (totalAllTimeGas) => {
@@ -75,10 +77,10 @@ class ClaimPage extends Component {
       errorMsg: '',
     })
 
-    const { escrowPrivateKey, destinationAddress, txAmount } = this.state
+    const { escrowPrivateKey, destinationAddress, receivedTxId } = this.state
     const { contractScriptHash, net } = this.props
 
-    neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash, txAmount)
+    neonJsClaim(destinationAddress, escrowPrivateKey, net, contractScriptHash, receivedTxId)
       .then((res) => {
         if (res.result === true) {
           this.setState({
@@ -106,7 +108,7 @@ class ClaimPage extends Component {
   }
 
   render() {
-    const { escrowPrivateKey } = this.state
+    const { receivedTxId, assets } = this.state
     const { contractScriptHash, net } = this.props
 
     return (
@@ -177,7 +179,7 @@ class ClaimPage extends Component {
                   </div>
                 }
 
-                { !this.state.balanceLoading && this.state.txAmount == 0 &&
+                { !this.state.balanceLoading && !this.state.assets &&
                   <div className='panel panel-danger text-left'>
                     <div className='panel-body'>
                       <h3>Whoops!</h3>
@@ -187,10 +189,11 @@ class ClaimPage extends Component {
                   </div>
                 }
 
-                { !this.state.balanceLoading && this.state.txAmount > 0 &&
+                { (!this.state.balanceLoading && assets !== null) &&
                   <div className='panel panel-default'>
                     <div className='panel-body'>
-                      <h3>You have been sent {this.state.txAmount} GAS (TODO)!</h3>
+                      { assets[GAS_ASSET_ID] > 0 && <h3>You have been sent { assets[GAS_ASSET_ID] } GAS (TODO)!</h3>}
+                      { assets[NEO_ASSET_ID] > 0 && <h3>You have been sent { assets[NEO_ASSET_ID] } NEO (TODO)!</h3>}
                       <p className='lead'>Give us a public wallet address and we will send it right over.</p>
 
                       <form>
@@ -243,7 +246,7 @@ class ClaimPage extends Component {
                 }
 
                 <GetBalanceOf
-                  escrowPrivateKey={ escrowPrivateKey }
+                  txId={ receivedTxId }
                   contractScriptHash={ contractScriptHash }
                   net={ net }
                   setBalanceState={ this.setBalanceState }

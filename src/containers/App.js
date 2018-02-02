@@ -17,7 +17,7 @@ import { net, contractScriptHash } from './AppConfig'
 const App = () => (
   <Router>
     <Switch>
-      <Route path='/claim/:key' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+      <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
       />
       <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
       />

@@ -1,25 +1,22 @@
-import React, { Component } from 'react'
-import { wallet, u } from '@cityofzion/neon-js'
+import { Component } from 'react'
 
 import { GAS_ASSET_ID } from '../lib/const'
-import { neonGetBalance, neonGetEscrowInfo } from '../lib/storage'
+import { neonGetTxAssets, neonGetTxInfo } from '../lib/storage'
 
 class GetBalanceOf extends Component {
   componentDidMount() {
-    const { escrowPrivateKey, contractScriptHash, net } = this.props
-    this.getBalance(escrowPrivateKey, contractScriptHash, net)
+    const { txId, contractScriptHash, net } = this.props
+    this.getBalance(txId, contractScriptHash, net)
   }
 
-  getBalance = (escrowPrivateKey, contractScriptHash, net) => {
-    const escrowAccount = new wallet.Account(escrowPrivateKey)
-    neonGetBalance(escrowAccount.scriptHash, GAS_ASSET_ID, contractScriptHash, net)
-      .then(res => {
-        console.log('balance res', res)
-        if (res.result) {
-          const txAmount = u.fixed82num(res.result)
-          this.props.setBalanceState(txAmount)
+  getBalance = (txId, contractScriptHash, net) => {
+    neonGetTxAssets(txId, contractScriptHash, net)
+      .then(assets => {
+        console.log('balance res', assets)
+        if (assets) {
+          this.props.setBalanceState(assets)
 
-          neonGetEscrowInfo(escrowAccount.scriptHash, contractScriptHash, net)
+          neonGetTxInfo(txId, contractScriptHash, net)
             .then(res => {
               console.log('escrow info', res)
             })
@@ -27,11 +24,11 @@ class GetBalanceOf extends Component {
               console.log(e)
             })
         } else {
-          this.props.setBalanceState(0)
+          this.props.setBalanceState(null)
         }
       })
       .catch((e) => {
-        this.props.setBalanceState(0)
+        this.props.setBalanceState(null)
         console.log(e)
       })
   }

@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 
-import { neonGetOwnedEscrowScriptHashes, neonGetEscrowInfo } from '../lib/storage'
+import { u } from '@cityofzion/neon-js'
+
+import { SENDER_HISTORY_PREFIX, GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
+import { neonGetTxHistory, neonGetTxInfo, neonGetTxAssets } from '../lib/storage'
 
 class OwnedEscrowList extends Component {
   state = {
@@ -12,16 +15,16 @@ class OwnedEscrowList extends Component {
 
   componentDidMount() {
     const { address, contractScriptHash, net } = this.props
-    this.getOwnedEscrowScriptHashes(address, contractScriptHash, net)
+    this.getSentTransactions(address, contractScriptHash, net)
   }
 
-  getOwnedEscrowScriptHashes = (address, contractScriptHash, net) => {
-    neonGetOwnedEscrowScriptHashes(address, contractScriptHash, net)
+  getSentTransactions = (address, contractScriptHash, net) => {
+    neonGetTxHistory(SENDER_HISTORY_PREFIX, address, contractScriptHash, net)
       .then((results) => {
         console.log('got some!', results)
-        results.map(previousEscrowHash => {
-          console.log('getting escrow info for ', previousEscrowHash)
-          this.getEscrowInfo(previousEscrowHash, contractScriptHash, net)
+        results.map(txId => {
+          console.log('getting tx info for ', txId)
+          this.getTxInfo(txId, contractScriptHash, net)
         })
       })
       .catch((e) => {
@@ -63,16 +66,25 @@ class OwnedEscrowList extends Component {
     console.log('rescinding ', previousScriptHash)
   }
 
-  getEscrowInfo = (ownerScriptHash, contractScriptHash, net) => {
-    console.log(ownerScriptHash)
-    neonGetEscrowInfo(ownerScriptHash, contractScriptHash, net)
+  getTxInfo = (txId, contractScriptHash, net) => {
+    console.log(txId)
+    neonGetTxInfo(txId, contractScriptHash, net)
       .then((result) => {
-        console.log('got some escrow info', result)
+        console.log('got some transaction info', result)
+        return neonGetTxAssets(u.reverseHex(txId), contractScriptHash, net)
+          .then((assets) => {
+            let newPreviousSends = this.state.previousSends
+            newPreviousSends.push({
+              txId: txId,
+              note: result.note,
+              created: result.created,
+              canRescind: result.canRescind,
+              assets: assets,
+            })
 
-        let newPreviousSends = this.state.previousSends
-        newPreviousSends.push(result)
-
-        this.setState({ previousSends: newPreviousSends, isLoading: false })
+            console.log('adding', newPreviousSends)
+            this.setState({ previousSends: newPreviousSends, isLoading: false })
+          })
       })
       .catch((e) => {
         console.error(e)
@@ -85,18 +97,23 @@ class OwnedEscrowList extends Component {
 
     let rows = []
 
-    previousSends.map(previousSend => {
-      rows.push(
-        <tr key={ previousSend.txId }>
-          <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }>{previousSend.txId}</td>
-          <td>{previousSend.type}</td>
-          <td>{previousSend.amount}</td>
-          <td>{previousSend.note}</td>
-          <td>{previousSend.created}</td>
-          <td>{ previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.scriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
-        </tr>
-      )
-    })
+    if (previousSends) {
+      previousSends.map(previousSend => {
+        rows.push(
+          <tr key={ previousSend.txId }>
+            <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }>{previousSend.txId}</td>
+            <td>
+              { previousSend.assets[GAS_ASSET_ID] > 0 && <div>{ previousSend.assets[GAS_ASSET_ID] } GAS</div>}
+              { previousSend.assets[NEO_ASSET_ID] > 0 && <div>{ previousSend.assets[NEO_ASSET_ID] } NEO</div>}
+            </td>
+            <td>{previousSend.amount}</td>
+            <td>{previousSend.note}</td>
+            <td>{previousSend.created}</td>
+            <td>{ previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.scriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
+          </tr>
+        )
+      })
+    }
 
     return rows
   }
@@ -109,7 +126,6 @@ class OwnedEscrowList extends Component {
         <thead>
           <tr>
             <th>TxID</th>
-            <th>Type</th>
             <th>Amount</th>
             <th>Note</th>
             <th>Created</th>

@@ -1,4 +1,6 @@
 import Neon, { wallet, api, u } from '@cityofzion/neon-js'
+import axios from 'axios'
+import { GAS_ASSET_ID, NEO_ASSET_ID } from './const'
 
 export function neonGetTotalAllTime(contractScriptHash, assetId, net) {
   const query = Neon.create.query({
@@ -15,18 +17,88 @@ export function neonGetTotalAllTime(contractScriptHash, assetId, net) {
     })
 }
 
-export function neonGetBalance(scriptHash, assetId, contractScriptHash, net) {
+function assetsFromVouts(vouts, contractScriptHash) {
+  const assets = {}
+  assets[NEO_ASSET_ID] = 0
+  assets[GAS_ASSET_ID] = 0
+
+  vouts.forEach((voutArray) => {
+    voutArray.forEach((vout) => {
+      if (vout.address === wallet.getAddressFromScriptHash(contractScriptHash)) {
+        console.log(vout)
+        assets[vout.asset.slice(2)] += parseFloat(vout.value) // todo, switch to bignumber
+      }
+    })
+  })
+
+  return assets
+}
+
+export function neonGetTxAssets(txId, contractScriptHash, net) {
+  return axios.get(net + '/v2/transaction/' + txId)
+    .then((res) => {
+      return assetsFromVouts([res.data.vout], contractScriptHash)
+    })
+}
+
+// Not in use now but could be used to get the entire balance for a script hash.
+export function neonGetBalance(scriptHash, contractScriptHash, net) {
   const query = Neon.create.query({
     'method': 'getstorage',
     'params': [
       contractScriptHash,
-      u.reverseHex(scriptHash) + u.reverseHex(assetId),
+      u.str2hexstring('recipient_history') + u.reverseHex(scriptHash),
     ],
   })
 
   return api.neonDB.getRPCEndpoint(net)
     .then((url) => {
       return query.execute(url)
+    })
+    .then((res) => {
+      if (res.result) {
+        const result = deserializeArray(res.result)
+
+        const txIds = []
+        for (const txId of result) {
+          txIds.push(u.reverseHex(txId))
+          // todo, filter out spent
+        }
+        return txIds
+      } else {
+        return null
+      }
+    })
+    .then((txIds) => {
+      const transactions = []
+      const promises = []
+      txIds.forEach((txId) => {
+        promises.push(axios.get(net + '/v2/transaction/' + txId))
+      })
+
+      return axios.all(promises).then(function(results) {
+        results.forEach(function(response) {
+          transactions.push(response.data.vout)
+        })
+
+        return transactions
+      })
+    })
+    .then((vouts) => {
+      const assets = {}
+      assets[NEO_ASSET_ID] = 0
+      assets[GAS_ASSET_ID] = 0
+
+      vouts.forEach((voutArray) => {
+        voutArray.forEach((vout) => {
+          if (vout.address === wallet.getAddressFromScriptHash(contractScriptHash)) {
+            console.log(vout)
+            assets[vout.asset.slice(2)] += parseFloat(vout.value) // todo, switch to bignumber
+          }
+        })
+      })
+
+      return assets
     })
 }
 
@@ -45,51 +117,14 @@ export function deserializeArray(data) {
   return deserializedArray
 }
 
-export function neonGetEscrowInfo(scriptHash, contractScriptHash, net) {
+export function neonGetTxHistory(keyPrefix, address, contractScriptHash, net) {
+  console.log('ownerAddress', address)
+  const sh = wallet.getScriptHashFromAddress(address)
   const query = Neon.create.query({
     'method': 'getstorage',
     'params': [
       contractScriptHash,
-      u.str2hexstring('info') + scriptHash,
-    ],
-  })
-
-  return api.neonDB.getRPCEndpoint(net)
-    .then((url) => {
-      return query.execute(url)
-        .then(res => {
-          let result = false
-          if (res.result) {
-            result = deserializeArray(res.result)
-            let createdTime = new Date(parseInt(u.reverseHex(result[2]), 16))
-            let dateOffset = (24 * 60 * 60 * 1000) * 7
-            let sevenDaysAgo = new Date()
-            sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
-
-            let canRescind = createdTime.created < sevenDaysAgo
-
-            result = {
-              txId: u.reverseHex(result[0]),
-              note: u.hexstring2str(result[1]),
-              created: new Date(parseInt(u.reverseHex(result[2]), 16) * 1000).toUTCString(),
-              canRescind,
-              scriptHash,
-            }
-          }
-
-          return result
-        })
-    })
-}
-
-export function neonGetOwnedEscrowScriptHashes(ownerAddress, contractScriptHash, net) {
-  console.log('ownerAddress', ownerAddress)
-  const sh = wallet.getScriptHashFromAddress(ownerAddress)
-  const query = Neon.create.query({
-    'method': 'getstorage',
-    'params': [
-      contractScriptHash,
-      u.str2hexstring('depositRecord') + u.reverseHex(sh),
+      u.str2hexstring(keyPrefix) + u.reverseHex(sh),
     ],
   })
 
@@ -101,6 +136,43 @@ export function neonGetOwnedEscrowScriptHashes(ownerAddress, contractScriptHash,
           let result = false
           if (res.result) {
             result = deserializeArray(res.result)
+          }
+
+          return result
+        })
+    })
+}
+
+export function neonGetTxInfo(txId, contractScriptHash, net) {
+  const query = Neon.create.query({
+    'method': 'getstorage',
+    'params': [
+      contractScriptHash,
+      txId,
+    ],
+  })
+
+  return api.neonDB.getRPCEndpoint(net)
+    .then((url) => {
+      return query.execute(url)
+        .then(res => {
+          console.log('neonGetTxInfo ' + txId, res)
+          let result = false
+          if (res.result) {
+            result = deserializeArray(res.result)
+            console.log('txdata', result)
+            let createdTime = new Date(parseInt(u.reverseHex(result[2]), 16))
+            let dateOffset = (24 * 60 * 60 * 1000) * 7
+            let sevenDaysAgo = new Date()
+            sevenDaysAgo.setTime(sevenDaysAgo.getTime() - dateOffset)
+
+            let canRescind = createdTime.created < sevenDaysAgo
+
+            result = {
+              note: u.hexstring2str(result[3]),
+              created: new Date(parseInt(u.reverseHex(result[2]), 16) * 1000).toUTCString(),
+              canRescind,
+            }
           }
 
           return result
