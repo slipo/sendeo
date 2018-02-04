@@ -20,7 +20,7 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
     })
     .then((transactionsResponse) => {
       const vouts = transactionsResponse.data.vout
-      console.log(transactionsResponse.data)
+
       for (const vout of vouts) {
         if (vout.address === wallet.getAddressFromScriptHash(contractScriptHash)) {
           inputs.push({ prevHash: receivedTxId, prevIndex: vout.n })
@@ -41,7 +41,6 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
       return query.execute(endpt)
     })
     .then((contractState) => {
-      console.log('contractState', contractState)
       script = contractState.result.script
 
       const invoke = {

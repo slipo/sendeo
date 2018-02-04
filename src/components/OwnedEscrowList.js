@@ -21,9 +21,7 @@ class OwnedEscrowList extends Component {
   getSentTransactions = (address, contractScriptHash, net) => {
     neonGetTxHistory(SENDER_HISTORY_PREFIX, address, contractScriptHash, net)
       .then((results) => {
-        console.log('got some!', results)
         results.map(txId => {
-          console.log('getting tx info for ', txId)
           this.getTxInfo(txId, contractScriptHash, net)
         })
       })
@@ -63,26 +61,23 @@ class OwnedEscrowList extends Component {
     }, '*')
 
     window.addEventListener('message', this.handleRescindGiftResponse, false)
-    console.log('rescinding ', previousScriptHash)
   }
 
   getTxInfo = (txId, contractScriptHash, net) => {
-    console.log(txId)
     neonGetTxInfo(txId, contractScriptHash, net)
       .then((result) => {
-        console.log('got some transaction info', result)
         return neonGetTxAssets(u.reverseHex(txId), contractScriptHash, net)
           .then((assets) => {
             let newPreviousSends = this.state.previousSends
             newPreviousSends.push({
-              txId: txId,
+              txId: u.reverseHex(txId),
               note: result.note,
               created: result.created,
+              spent: result.spent,
               canRescind: result.canRescind,
               assets: assets,
             })
 
-            console.log('adding', newPreviousSends)
             this.setState({ previousSends: newPreviousSends, isLoading: false })
           })
       })
@@ -106,10 +101,9 @@ class OwnedEscrowList extends Component {
               { previousSend.assets[GAS_ASSET_ID] > 0 && <div>{ previousSend.assets[GAS_ASSET_ID] } GAS</div>}
               { previousSend.assets[NEO_ASSET_ID] > 0 && <div>{ previousSend.assets[NEO_ASSET_ID] } NEO</div>}
             </td>
-            <td>{previousSend.amount}</td>
             <td>{previousSend.note}</td>
             <td>{previousSend.created}</td>
-            <td>{ previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.scriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
+            <td>{ previousSend.spent ? <div>Already claimed</div> : previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.scriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
           </tr>
         )
       })
@@ -135,7 +129,7 @@ class OwnedEscrowList extends Component {
         <tbody>
           { isLoading &&
             <tr>
-              <td colSpan='4' className='text-center primary'>
+              <td colSpan='5' className='text-center primary'>
                 <i className='fa fa-fw fa-spin fa-spinner' /> Checking wallet for previous sends...
               </td>
             </tr>

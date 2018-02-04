@@ -96,7 +96,7 @@ class ClaimPage extends Component {
             errorMsg: 'NEO node returned false, but no error message.',
           })
         }
-        console.log(res)
+
         return res
       })
       .catch((e) => {

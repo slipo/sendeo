@@ -25,7 +25,6 @@ function assetsFromVouts(vouts, contractScriptHash) {
   vouts.forEach((voutArray) => {
     voutArray.forEach((vout) => {
       if (vout.address === wallet.getAddressFromScriptHash(contractScriptHash)) {
-        console.log(vout)
         assets[vout.asset.slice(2)] += parseFloat(vout.value) // todo, switch to bignumber
       }
     })
@@ -103,7 +102,6 @@ export function neonGetBalance(scriptHash, contractScriptHash, net) {
       vouts.forEach((voutArray) => {
         voutArray.forEach((vout) => {
           if (vout.address === wallet.getAddressFromScriptHash(contractScriptHash)) {
-            console.log(vout)
             assets[vout.asset.slice(2)] += parseFloat(vout.value) // todo, switch to bignumber
           }
         })
@@ -123,13 +121,10 @@ export function deserializeArray(data) {
     deserializedArray.push(ss.read(parseInt(itemLength, 16)))
   }
 
-  // console.log(u.ab2str(u.hexstring2ab(deserializedArray[3])))
-
   return deserializedArray
 }
 
 export function neonGetTxHistory(keyPrefix, address, contractScriptHash, net) {
-  console.log('ownerAddress', address)
   const sh = wallet.getScriptHashFromAddress(address)
   const query = Neon.create.query({
     'method': 'getstorage',
@@ -163,15 +158,14 @@ export function neonGetTxInfo(txId, contractScriptHash, net) {
     ],
   })
 
+  let result = false
+
   return api.neonDB.getRPCEndpoint(net)
     .then((url) => {
       return query.execute(url)
         .then(res => {
-          console.log('neonGetTxInfo ' + txId, res)
-          let result = false
           if (res.result) {
             result = deserializeArray(res.result)
-            console.log('txdata', result)
             let createdTime = new Date(parseInt(u.reverseHex(result[2]), 16))
             let dateOffset = (24 * 60 * 60 * 1000) * 7
             let sevenDaysAgo = new Date()
@@ -184,6 +178,15 @@ export function neonGetTxInfo(txId, contractScriptHash, net) {
               created: new Date(parseInt(u.reverseHex(result[2]), 16) * 1000).toUTCString(),
               canRescind,
             }
+
+            return neonGetIsUnspent(u.reverseHex(txId), contractScriptHash, net)
+          }
+
+          return false
+        })
+        .then(unspent => {
+          if (result) {
+            result.spent = !unspent
           }
 
           return result

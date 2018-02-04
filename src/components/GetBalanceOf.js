@@ -12,19 +12,10 @@ class GetBalanceOf extends Component {
   getBalance = (txId, contractScriptHash, net) => {
     neonGetTxAssets(txId, contractScriptHash, net)
       .then(assets => {
-        console.log('balance res', assets)
         if (assets) {
-          let note
-          let created
-
           neonGetTxInfo(u.reverseHex(txId), contractScriptHash, net)
             .then(txRes => {
-              note = txRes.note
-              created = txRes.created
-              return neonGetIsUnspent(txId, contractScriptHash, net)
-            })
-            .then(unspent => {
-              this.props.setBalanceState(assets, !unspent, created, note)
+              return this.props.setBalanceState(assets, txRes.spent, txRes.created, txRes.note)
             })
             .catch((e) => {
               console.log(e)
