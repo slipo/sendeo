@@ -34,8 +34,19 @@ function assetsFromVouts(vouts, contractScriptHash) {
   return assets
 }
 
+export function neonGetIsUnspent(txId, contractScriptHash, net) {
+  const apiEndpoint = api.neonDB.getAPIEndpoint(net)
+  const smartContractAddress = wallet.getAddressFromScriptHash(contractScriptHash)
+  return axios.get(apiEndpoint + '/v2/address/balance/' + smartContractAddress).then(res => {
+    const unspent = [...res.data.NEO.unspent, ...res.data.GAS.unspent]
+    const unspentTxIds = Array.from(unspent, a => a.txid)
+    return !!unspentTxIds.includes(txId)
+  })
+}
+
 export function neonGetTxAssets(txId, contractScriptHash, net) {
-  return axios.get(net + '/v2/transaction/' + txId)
+  const apiEndpoint = api.neonDB.getAPIEndpoint(net)
+  return axios.get(apiEndpoint + '/v2/transaction/' + txId)
     .then((res) => {
       return assetsFromVouts([res.data.vout], contractScriptHash)
     })

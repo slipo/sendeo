@@ -1,7 +1,7 @@
 import { Component } from 'react'
+import { u } from '@cityofzion/neon-js'
 
-import { GAS_ASSET_ID } from '../lib/const'
-import { neonGetTxAssets, neonGetTxInfo } from '../lib/storage'
+import { neonGetTxAssets, neonGetTxInfo, neonGetIsUnspent } from '../lib/storage'
 
 class GetBalanceOf extends Component {
   componentDidMount() {
@@ -14,11 +14,17 @@ class GetBalanceOf extends Component {
       .then(assets => {
         console.log('balance res', assets)
         if (assets) {
-          this.props.setBalanceState(assets)
+          let note
+          let created
 
-          neonGetTxInfo(txId, contractScriptHash, net)
-            .then(res => {
-              console.log('escrow info', res)
+          neonGetTxInfo(u.reverseHex(txId), contractScriptHash, net)
+            .then(txRes => {
+              note = txRes.note
+              created = txRes.created
+              return neonGetIsUnspent(txId, contractScriptHash, net)
+            })
+            .then(unspent => {
+              this.props.setBalanceState(assets, !unspent, created, note)
             })
             .catch((e) => {
               console.log(e)

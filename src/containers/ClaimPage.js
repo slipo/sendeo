@@ -37,14 +37,15 @@ class ClaimPage extends Component {
       txNote: '',
       totalAllTimeNeo: 0,
       totalAllTimeGas: 0,
+      spent: false,
       status: '',
       errorMsg: '',
       assets: null,
     }
   }
 
-  setBalanceState = (assets, txCreated, txNote) => {
-    this.setState({ assets, txCreated, txNote, balanceLoading: false })
+  setBalanceState = (assets, spent, txCreated, txNote) => {
+    this.setState({ assets, spent, txCreated, txNote, balanceLoading: false })
   }
 
   setGasAllTimeState = (totalAllTimeGas) => {
@@ -108,7 +109,7 @@ class ClaimPage extends Component {
   }
 
   render() {
-    const { receivedTxId, assets } = this.state
+    const { receivedTxId, assets, spent } = this.state
     const { contractScriptHash, net } = this.props
 
     return (
@@ -194,6 +195,7 @@ class ClaimPage extends Component {
                     <div className='panel-body'>
                       { assets[GAS_ASSET_ID] > 0 && <h3>You have been sent { assets[GAS_ASSET_ID] } GAS (TODO)!</h3>}
                       { assets[NEO_ASSET_ID] > 0 && <h3>You have been sent { assets[NEO_ASSET_ID] } NEO (TODO)!</h3>}
+                      { spent && <h3>Assets were claimed already.</h3>}
                       <p className='lead'>Give us a public wallet address and we will send it right over.</p>
 
                       <form>
