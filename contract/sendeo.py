@@ -11,9 +11,6 @@ from boa.blockchain.vm.Neo.Input import GetIndex
 
 from .common.serialization import *
 
-def InputGetHash(i):
-    return False
-
 def Main(operation, args):
     trigger = GetTrigger()
 
@@ -57,6 +54,14 @@ def Main(operation, args):
             # We have a least one. We'll keep checking if there are more.
             print('That input was valid')
             valid = True
+
+        # Go through all the outputs and make sure none are coming to the contract
+        # This would indicate change, which we don't support. Only full withdrawals are supported.
+        contract_script_hash = GetExecutingScriptHash()
+        for output in tx.Outputs:
+            shash = GetScriptHash(output)
+            if shash == contract_script_hash:
+                return False
 
         print('All good')
         return valid
@@ -192,3 +197,8 @@ def GetCurrentTimestamp():
     currentBlock = GetHeader(currentHeight)
     time = currentBlock.Timestamp
     return time
+
+# Workaround. Details here:
+# https://github.com/CityOfZion/neo-boa/issues/38
+def InputGetHash(i):
+    return False
