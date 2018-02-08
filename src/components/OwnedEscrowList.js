@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 
-import { u } from '@cityofzion/neon-js'
+import { wallet, u } from '@cityofzion/neon-js'
 
 import { SENDER_HISTORY_PREFIX, GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
 import { neonGetTxHistory, neonGetTxInfo, neonGetTxAssets } from '../lib/storage'
+import { neonJsClaim } from '../lib/invocations'
 
 class OwnedEscrowList extends Component {
   state = {
@@ -34,33 +35,17 @@ class OwnedEscrowList extends Component {
       })
   }
 
-  handleRescindGiftResponse = (event) => {
-    if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
-      this.setState({
-        txId: event.data.result.txid,
-        success: true,
+  rescindPreviousSend = (txId) => {
+    const { address, contractScriptHash, net } = this.props
+
+    const tmpAccount = new wallet.Account()
+    neonJsClaim(address, tmpAccount.WIF, net, contractScriptHash, txId)
+      .then((res) => {
+        console.log('res', res)
       })
-
-      window.removeEventListener('click', this.handleRescindGiftResponse)
-    }
-  }
-
-  rescindPreviousSend = (previousScriptHash) => {
-    const { contractScriptHash } = this.props
-
-    window.postMessage({
-      type: 'NEOLINK_SEND_INVOKE',
-      text: {
-        scriptHash: contractScriptHash,
-        operation: 'rescindGift',
-        arg1: previousScriptHash,
-        arg2: '',
-        assetType: 'GAS',
-        assetAmount: 0.00000001, // We need to send a drop of GAS to make it go through. todo add this to NeoLink.
-      },
-    }, '*')
-
-    window.addEventListener('message', this.handleRescindGiftResponse, false)
+      .catch((e) => {
+        console.log('error', e)
+      })
   }
 
   getTxInfo = (txId, contractScriptHash, net) => {
@@ -103,7 +88,7 @@ class OwnedEscrowList extends Component {
             </td>
             <td>{previousSend.note}</td>
             <td>{previousSend.created}</td>
-            <td>{ previousSend.spent ? <div>Already claimed</div> : previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.scriptHash) } }>Rescind</a> : <span>Not Yet</span> }</td>
+            <td>{ previousSend.spent ? <div>Already claimed</div> : previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.txId) } }>Rescind</a> : <span>Not Yet</span> }</td>
           </tr>
         )
       })

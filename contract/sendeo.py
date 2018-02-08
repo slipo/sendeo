@@ -26,6 +26,25 @@ def Main(operation, args):
 
         valid = False
 
+        # Go through all the outputs and make sure there's only one output destination.
+        # This will be used if we're auto-rescinding the assets (ie sending back to the original
+        # sender after a week goes by without the recipient picking up). We'll make sure there's only
+        # one output script hash and it matches the stored script hash of the original sender
+        #
+        # Also we make sure not outputs are going to the contract script hash because we don't support
+        # change.
+        output_script_hash = None
+        contract_script_hash = GetExecutingScriptHash()
+        for output in tx.Outputs:
+            shash = GetScriptHash(output)
+            if shash == contract_script_hash:
+                return False
+
+            if output_script_hash == None:
+                output_script_hash = shash
+            elif shash != output_script_hash:
+                return False
+
         # CheckWitness here just to be sure.
         for input in tx.Inputs:
             hash = InputGetHash(input)
@@ -40,9 +59,7 @@ def Main(operation, args):
             is_escrow = CheckWitness(escrow)
 
             if is_escrow != True:
-                is_sender = CheckWitness(sender)
-
-                if is_sender != True:
+                if sender != output_script_hash:
                     return False
 
                 current_time = GetCurrentTimestamp()
@@ -54,14 +71,6 @@ def Main(operation, args):
             # We have a least one. We'll keep checking if there are more.
             print('That input was valid')
             valid = True
-
-        # Go through all the outputs and make sure none are coming to the contract
-        # This would indicate change, which we don't support. Only full withdrawals are supported.
-        contract_script_hash = GetExecutingScriptHash()
-        for output in tx.Outputs:
-            shash = GetScriptHash(output)
-            if shash == contract_script_hash:
-                return False
 
         print('All good')
         return valid
