@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 import Sticky from 'react-stickynode'
-import ScrollableAnchor from 'react-scrollable-anchor'
 
 import './AboutPage.css'
+import logo from '../images/logo-flat.png'
 
 class AboutPage extends Component {
   render() {
@@ -14,9 +14,14 @@ class AboutPage extends Component {
           <nav className='main-nav-outer'>
             <div className='container'>
               <ul className='main-nav'>
-                <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
-                <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
-                <li><Link to='/previousSends'>Previous Sends</Link></li>
+                <li><Link to='/send?asset=neo'>Send NEO</Link></li>
+                <li><Link to='/send?asset=gas'>Send GAS</Link></li>
+                <li className='small-logo'>
+                  <Link to='/'>
+                    <img src={ logo } alt='Sendeo Logo Flat' />
+                  </Link>
+                </li>
+                <li><Link to='/previousSends'>Your History</Link></li>
                 <li><Link to='/about'>About</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>
@@ -28,10 +33,8 @@ class AboutPage extends Component {
 
         <section className='main-section'>
           <div className='container'>
-            <ScrollableAnchor id={ 'get-started' } offset={ '400' }>
-              <h2>About SENDEO</h2>
-            </ScrollableAnchor>
-            <h6>Basically the pursuit of knowledge and that which we don't know about, but like.</h6>
+            <h2>About Sendeo</h2>
+            <h3>Basically the pursuit of knowledge and that which we don't know about, but like.</h3>
             <div className='row'>
               <div className='col-sm-6 col-sm-offset-3 wow fadeInLeft delay-05s'>
                 <p className='lead'>This is a brain child of Silas who has done the majority of the work to make SENDEO work.</p>

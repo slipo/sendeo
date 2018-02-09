@@ -14,6 +14,7 @@ import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
 import OwnedEscrowList from '../components/OwnedEscrowList'
 import CheckLoggedIn from '../components/CheckLoggedIn'
 import './PreviousSendsPage.css'
+import logo from '../images/logo-flat.png'
 
 configureAnchors({ offset: -80, scrollDuration: 500 })
 
@@ -48,9 +49,14 @@ class PreviousSends extends Component {
           <nav className='main-nav-outer'>
             <div className='container'>
               <ul className='main-nav'>
-                <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
-                <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
-                <li><Link to='/previousSends'>Previous Sends</Link></li>
+                <li><Link to='/send?asset=neo'>Send NEO</Link></li>
+                <li><Link to='/send?asset=gas'>Send GAS</Link></li>
+                <li className='small-logo'>
+                  <Link to='/'>
+                    <img src={ logo } alt='Sendeo Logo Flat' />
+                  </Link>
+                </li>
+                <li><Link to='/previousSends'>Your History</Link></li>
                 <li><Link to='/about'>About</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>
@@ -86,13 +92,6 @@ class PreviousSends extends Component {
             </div>
           </div>
         </section>
-
-        <pre>
-          <code>
-            { JSON.stringify(this.state, null, 2) }
-          </code>
-        </pre>
-
       </div>
     )
   }

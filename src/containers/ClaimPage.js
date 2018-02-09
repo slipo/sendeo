@@ -16,6 +16,7 @@ import GetBalanceOf from '../components/GetBalanceOf'
 import GetTotalAllTime from '../components/GetTotalAllTime'
 
 import './ClaimPage.css'
+import logo from '../images/logo-flat.png'
 
 class ClaimPage extends Component {
   constructor(props) {
@@ -129,9 +130,14 @@ class ClaimPage extends Component {
           <nav className='main-nav-outer'>
             <div className='container'>
               <ul className='main-nav'>
-                <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
-                <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
-                <li><Link to='/previousSends'>Previous Sends</Link></li>
+                <li><Link to='/send?asset=neo'>Send NEO</Link></li>
+                <li><Link to='/send?asset=gas'>Send GAS</Link></li>
+                <li className='small-logo'>
+                  <Link to='/'>
+                    <img src={ logo } alt='Sendeo Logo Flat' />
+                  </Link>
+                </li>
+                <li><Link to='/previousSends'>Your History</Link></li>
                 <li><Link to='/about'>About</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>

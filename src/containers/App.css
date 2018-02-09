@@ -1,7 +1,21 @@
+body {
+  font-family: 'Trirong', serif;
+  letter-spacing: 0.009em;
+}
+
+.container {
+
+}
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: 0.05em;
+}
+
 .page-title {
     text-align: center;
     margin: 10px 0 20px;
 }
+
 
 .sticky-inner-wrapper {
   z-index: 9;
@@ -9,4 +23,27 @@
 
 .button-container {
   margin-bottom: 25px;
+}
+
+.main-nav-outer {
+  background-color: black;
+}
+.main-nav {
+  margin-top: -3px;
+  background-color: black;
+}
+.main-nav li a {
+  color: white;
+  font-family: 'Cutive Mono', monospace;
+  letter-spacing: 0.03em;
+  font-size: 1.2em;
+  font-weight: 100;
+}
+.main-nav li.small-logo a {
+  margin: 0;
+  margin-top: -10px;
+}
+
+.small-logo img {
+  height: 50px;
 }

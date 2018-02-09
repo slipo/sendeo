@@ -2,3 +2,52 @@
   line-height: 1em;
   margin-top: 15px;
 }
+
+.left-side {
+  border-right: 1px solid #eee;
+  padding-right: 50px;
+}
+
+.service-list-col1 {
+  width: 200px;
+}
+
+.service-list-col2 {
+  padding-left: 25px;
+}
+
+.service-list.reverse .service-list-col1 {
+  width: 475px;
+}
+
+.service-list {
+  margin-top: 25px;
+}
+
+.service-list-col1.smaller-image img {
+  max-height: 200px;
+}
+
+.service-list h3 {
+  font-size: 1.3em;
+  margin-top: 15px;
+}
+
+.service-list p {
+  line-height: 1.25em;
+  letter-spacing: 0.03em;
+}
+
+.form-container {
+  margin-top: 50px;
+  padding-left: 50px;
+}
+
+.form-container input[type=text] {
+  border: 0;
+  box-shadow: none;
+  border-bottom: 3px solid black;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 0;
+}

@@ -9,13 +9,14 @@ import {
 } from 'react-bootstrap'
 import { wallet, u } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
-import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
 import * as qs from 'query-string'
 
 import CheckLoggedIn from '../components/CheckLoggedIn'
 import './SendPage.css'
-
-configureAnchors({ offset: -80, scrollDuration: 500 })
+import logo from '../images/logo-flat.png'
+import neoLogo from '../images/neo-logo.svg'
+import secretUrlIcon from '../images/secret-url.svg'
+import pointingIcon from '../images/pointing.svg'
 
 class SendPage extends Component {
   state = {
@@ -139,26 +140,18 @@ class SendPage extends Component {
 
     return (
       <div>
-        <header className='header' id='header'>
-          <div className='container'>
-            <figure className='animated fadeInDown delay-07s'>
-              <iframe width='560' height='315' src='https://www.youtube.com/embed/8PYKOo_jgJo?rel=0&amp;controls=0' frameBorder='0' allow='autoplay; encrypted-media' allowFullScreen />
-            </figure>
-            <h1 className='animated fadeInDown delay-07s'>The easiest way to share NEO and GAS with others</h1>
-            <ul className='we-create animated fadeInUp delay-1s'>
-              <li>It only takes a minute.</li>
-            </ul>
-            <a className='link animated fadeInUp delay-1s servicelink' href='#get-started'>Get Started</a>
-          </div>
-        </header>
-
         <Sticky>
           <nav className='main-nav-outer'>
             <div className='container'>
               <ul className='main-nav'>
-                <li><Link to='/?asset=neo#get-started'>Send NEO</Link></li>
-                <li><Link to='/?asset=gas#get-started'>Send GAS</Link></li>
-                <li><Link to='/previousSends'>Previous Sends</Link></li>
+                <li><Link to='/send?asset=neo'>Send NEO</Link></li>
+                <li><Link to='/send?asset=gas'>Send GAS</Link></li>
+                <li className='small-logo'>
+                  <Link to='/'>
+                    <img src={ logo } alt='Sendeo Logo Flat' />
+                  </Link>
+                </li>
+                <li><Link to='/previousSends'>Your History</Link></li>
                 <li><Link to='/about'>About</Link></li>
               </ul>
               <a className='res-nav_click' href='#'>
@@ -171,138 +164,115 @@ class SendPage extends Component {
 
         <section className='main-section'>
           <div className='container'>
-            <ScrollableAnchor id={ 'get-started' } offset={ '400' }>
-              <h2>How it Works</h2>
-            </ScrollableAnchor>
-            <h6>Send NEO is a smart contract that serves as a temporary escrow account that can be claimed by others.</h6>
+            <h2>Send { assetType }</h2>
+            <h6>Sendeo is a smart contract that serves as a temporary escrow account that can be claimed by others.</h6>
             <div className='row'>
-              <div className='col-sm-7 wow fadeInLeft delay-05s'>
+              <div className='col-sm-7 wow fadeInLeft delay-05s left-side'>
                 <div className='service-list'>
                   <div className='service-list-col1'>
-                    <i className='fa-paper-plane' />
+                    <img src={ neoLogo } />
                   </div>
                   <div className='service-list-col2'>
-                    <h3>1. Send NEO or GAS using NeoLink</h3>
-                    <p>Be sure NeoLink is unlocked and choose the amount of NEO or GAS you want to send.</p>
+                    <h3>First, login to <a href='https://github.com/CityOfZion/NeoLink' target='_blank'>NeoLink</a> and Send some { assetType }</h3>
+                    <p>NeoLink is a browser extension that lets you interact with the NEO blockchain.</p>
                   </div>
                 </div>
-                <div className='service-list'>
+                <hr />
+                <div className='service-list reverse'>
                   <div className='service-list-col1'>
-                    <i className='fa-bullhorn' />
+                    <h3>Pick your asset and how much and click send! Boom!</h3>
+                    <p>You then get a secret URL that you can share with anyone to claim the { assetType }.</p>
                   </div>
                   <div className='service-list-col2'>
-                    <h3>2. Share the secret URL with the recipient</h3>
-                    <p>Once the deposit has been made, we will give you a URL that will be able to unlock the assets.</p>
+                    <img src={ secretUrlIcon } />
                   </div>
                 </div>
+                <hr />
                 <div className='service-list'>
-                  <div className='service-list-col1'>
-                    <i className='fa-address-card-o' />
+                  <div className='service-list-col1 smaller-image'>
+                    <img src={ pointingIcon } />
                   </div>
                   <div className='service-list-col2'>
-                    <h3>3. The recipient says where to send it</h3>
-                    <p>They provide the smart contract with a wallet address and claim their gift.</p>
-                  </div>
-                </div>
-                <div className='service-list'>
-                  <div className='service-list-col1'>
-                    <i className='fa-money' />
-                  </div>
-                  <div className='service-list-col2'>
-                    <h3>4. Profit</h3>
-                    <p>It really is that easy.</p>
+                    <h3>Your recipient clicks the link and tells Sendeo where to send the { assetType }.</h3>
+                    <p>If you don't have a wallet yet, don't worry. We got you covered with all the info you need.</p>
                   </div>
                 </div>
               </div>
-              <figure className='col-sm-5 text-right wow fadeInUp delay-02s'>
-                <div className='panel panel-default'>
-                  <div className='panel-heading'>
-                    <h3 className='panel-title'>How much would you like to send?</h3>
+              <figure className='col-sm-5 text-right wow fadeInUp delay-02s form-container'>
+                <h1>So, how much you sending?</h1>
+                <form>
+                  <FormGroup
+                    controlId='sendForm'
+                    validationState={ this.isValidAmountToSend() }
+                    style={ { 'minHeight': '100px' } }
+                  >
+                    <FormControl
+                      type='text'
+                      value={ amountToSend }
+                      placeholder=''
+                      onChange={ this.handleChangeToAmount }
+                      bsSize='large'
+                      className='text-right'
+                    />
+                    <FormControl.Feedback />
+                    { assetType === 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
+                  </FormGroup>
+
+                  <ButtonGroup justified>
+                    <Button
+                      href='#'
+                      onClick={ () => this.setAssetType('NEO') }
+                      active={ assetType === 'NEO' }
+                      disabled={ !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
+                    >Send NEO</Button>
+                    <Button
+                      href='#'
+                      onClick={ () => this.setAssetType('GAS') }
+                      active={ assetType === 'GAS' }
+                      disabled={ !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
+                    >Send GAS</Button>
+                  </ButtonGroup>
+
+                  <hr />
+
+                  <div className='button-container'>
+                    <Button
+                      bsStyle='primary'
+                      bsSize='large'
+                      block
+                      disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
+                      onClick={ () => this.initiateDeposit() }
+                    >Deposit Now</Button>
+                    <p className='text-center terms-text'><small>By using Sendeo, you acknowledge that you are using beta software, at your own risk.</small></p>
                   </div>
-                  <div className='panel-body'>
-                    <form>
-                      <FormGroup
-                        controlId='sendForm'
-                        validationState={ this.isValidAmountToSend() }
-                        style={ { 'minHeight': '100px' } }
-                      >
-                        <FormControl
-                          type='text'
-                          value={ amountToSend }
-                          placeholder=''
-                          onChange={ this.handleChangeToAmount }
-                          bsSize='large'
-                          className='text-right'
-                        />
-                        <FormControl.Feedback />
-                        { assetType === 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
-                      </FormGroup>
 
-                      <ButtonGroup justified>
-                        <Button
-                          href='#'
-                          onClick={ () => this.setAssetType('NEO') }
-                          active={ assetType === 'NEO' }
-                          disabled={ !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
-                        >Send NEO</Button>
-                        <Button
-                          href='#'
-                          onClick={ () => this.setAssetType('GAS') }
-                          active={ assetType === 'GAS' }
-                          disabled={ !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
-                        >Send GAS</Button>
-                      </ButtonGroup>
-
+                  { depositSuccess &&
+                    <div className='alert alert-success success-container text-center'>
+                      <p className='lead'>Deposit Successful!</p>
                       <hr />
 
-                      <div className='button-container'>
-                        <Button
-                          bsStyle='primary'
-                          bsSize='large'
-                          block
-                          disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
-                          onClick={ () => this.initiateDeposit() }
-                        >Deposit Now</Button>
-                        <p className='text-center terms-text'><small>By clicking the submit button below, you are acknowledging agreement that you will be
-                        sending your own assets blah blah blah.</small></p>
-                      </div>
+                      <dl className='dl-horizontal'>
+                        <dt className='address-link'>Tx ID:</dt>
+                        <dd className='text-left'><a href='#'>{ txId }</a></dd>
+                        <dt>Asset:</dt>
+                        <dd className='text-left'><a href='#'>{ assetType }</a></dd>
+                        <dt>Quantity:</dt>
+                        <dd className='text-left'><a href='#'>{ amountToSend }</a></dd>
+                      </dl>
+                      <hr />
 
-                      { depositSuccess &&
-                        <div className='alert alert-success success-container text-center'>
-                          <p className='lead'>Deposit Successful!</p>
-                          <hr />
+                      <p>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
+                      <pre>https://sendeo.com/claim/{ this.state.escrowPrivateKey }</pre>
 
-                          <dl className='dl-horizontal'>
-                            <dt className='address-link'>Tx ID:</dt>
-                            <dd className='text-left'><a href='#'>{ txId }</a></dd>
-                            <dt>Asset:</dt>
-                            <dd className='text-left'><a href='#'>{ assetType }</a></dd>
-                            <dt>Quantity:</dt>
-                            <dd className='text-left'><a href='#'>{ amountToSend }</a></dd>
-                          </dl>
-                          <hr />
+                      <p className='small'>Don't lose this, you can't get it back. But just in case, in one week's time, if this deposit hasn't been claimed, we will send it back to you.</p>
 
-                          <p>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
-                          <pre>https://sendneo.com/claim/{ this.state.escrowPrivateKey }</pre>
-
-                          <p className='small'>Don't lose this, you can't get it back. But just in case, in one week's time, if this deposit hasn't been claimed, we will send it back to you.</p>
-
-                        </div>
-                      }
-                    </form>
-                  </div>
-                </div>
+                    </div>
+                  }
+                </form>
               </figure>
             </div>
           </div>
         </section>
-
-        <pre>
-          <code>
-            { JSON.stringify(this.state, null, 2) }
-          </code>
-        </pre>
-
       </div>
     )
   }
