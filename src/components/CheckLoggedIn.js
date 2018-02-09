@@ -78,8 +78,7 @@ class CheckLoggedIn extends Component {
 
     return (
       <div id='neo-link-status-container' className={ `text-right alert alert-${statusClass}` }>
-        <div className='status-title lead'>NeoLink Status: <strong>{statusText}</strong></div>
-        <div className='status-content'>{ content }</div>
+        <div className='status-title lead'>NeoLink: <strong>{statusText}</strong></div>
       </div>
     )
   }

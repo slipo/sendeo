@@ -37,9 +37,15 @@ class SendPage extends Component {
 
   componentDidMount() {
     const urlQuery = qs.parse(window.location.search)
-
     if (urlQuery.asset) {
-      this.setState({ assetType: urlQuery.asset.toUpperCase() })
+      this.setAssetType(urlQuery.asset.toUpperCase())
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const urlQuery = qs.parse(window.location.search)
+    if (urlQuery.asset && this.state.assetType !== urlQuery.asset.toUpperCase()) {
+      this.setAssetType(urlQuery.asset.toUpperCase())
     }
   }
 
@@ -210,6 +216,7 @@ class SendPage extends Component {
                       type='text'
                       value={ amountToSend }
                       placeholder=''
+                      autofocus='true'
                       onChange={ this.handleChangeToAmount }
                       bsSize='large'
                       className='text-right'
@@ -237,7 +244,7 @@ class SendPage extends Component {
 
                   <div className='button-container'>
                     <Button
-                      bsStyle='primary'
+                      bsStyle='success'
                       bsSize='large'
                       block
                       disabled={ !amountToSendIsValid || !extensionState.neoLinkConnected || !extensionState.isLoggedIn }
@@ -245,34 +252,38 @@ class SendPage extends Component {
                     >Deposit Now</Button>
                     <p className='text-center terms-text'><small>By using Sendeo, you acknowledge that you are using beta software, at your own risk.</small></p>
                   </div>
-
-                  { depositSuccess &&
-                    <div className='alert alert-success success-container text-center'>
-                      <p className='lead'>Deposit Successful!</p>
-                      <hr />
-
-                      <dl className='dl-horizontal'>
-                        <dt className='address-link'>Tx ID:</dt>
-                        <dd className='text-left'><a href='#'>{ txId }</a></dd>
-                        <dt>Asset:</dt>
-                        <dd className='text-left'><a href='#'>{ assetType }</a></dd>
-                        <dt>Quantity:</dt>
-                        <dd className='text-left'><a href='#'>{ amountToSend }</a></dd>
-                      </dl>
-                      <hr />
-
-                      <p>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
-                      <pre>https://sendeo.com/claim/{ this.state.escrowPrivateKey }</pre>
-
-                      <p className='small'>Don't lose this, you can't get it back. But just in case, in one week's time, if this deposit hasn't been claimed, we will send it back to you.</p>
-
-                    </div>
-                  }
                 </form>
               </figure>
             </div>
           </div>
         </section>
+
+        { depositSuccess &&
+          <div className='modal-outer success-container'>
+            <div className='modal-inner'>
+              <h2 className='lead text-center'>Deposit Successful!</h2>
+              <hr />
+
+              <dl className='dl-horizontal'>
+                <dt className='address-link'>Tx ID:</dt>
+                <dd className='text-left'><a href='#'><div className='tx-container'>{ txId }</div></a></dd>
+                <dt>Asset:</dt>
+                <dd className='text-left'><a href='#'>{ assetType }</a></dd>
+                <dt>Quantity:</dt>
+                <dd className='text-left'><a href='#'>{ amountToSend }</a></dd>
+              </dl>
+              <hr />
+
+              <p className='lead text-center'>You can share the URL below with anyone you would like to be able to claim the assets above.</p>
+              <pre className='text-center'>https://sendeo.com/claim/{ this.state.escrowPrivateKey }</pre>
+              <hr />
+
+              <p className='text-center small'>Don't lose this, you can't get it back. But just in case, in one week's time, if this deposit hasn't been claimed, you can go get it back.</p>
+
+              <p className='text-center'><Link to={ `/send?asset=${assetType}` }>Click here to send some more.</Link></p>
+            </div>
+          </div>
+        }
       </div>
     )
   }

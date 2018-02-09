@@ -51,3 +51,25 @@
   font-weight: bold;
   border-radius: 0;
 }
+
+.modal-outer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0,0,0,0.8);
+  z-index: 9;
+}
+
+.modal-inner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  box-shadow:0 4px 5px -3px #ececec;
+  background-color: white;
+  padding: 25px;
+  max-width: 500px;
+}

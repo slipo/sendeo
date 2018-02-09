@@ -2,8 +2,10 @@
   position: absolute;
   right: 0;
   top: 0px;
-  padding: 5px 25px;
+  padding: 10px 25px 5px;
   border-radius: 0;
+  height: 51px;
+  line-height: 51px;
 }
 
 #neo-link-status-container .status-title {
