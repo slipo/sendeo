@@ -45,7 +45,6 @@ def Main(operation, args):
             elif shash != output_script_hash:
                 return False
 
-        # CheckWitness here just to be sure.
         for input in tx.Inputs:
             hash = InputGetHash(input)
             context = GetContext()

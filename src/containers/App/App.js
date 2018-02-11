@@ -2,19 +2,19 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 
 import 'bootstrap/dist/css/bootstrap.css'
-import '../knight-theme/style.css'
-import '../knight-theme/animate.css'
-import '../knight-theme/responsive.css'
+import '../../knight-theme/style.css'
+import '../../knight-theme/animate.css'
+import '../../knight-theme/responsive.css'
 
 import './App.css'
 
-import ClaimPage from './ClaimPage'
-import SendPage from './SendPage'
-import LandingPage from './LandingPage'
-import PreviousSendsPage from './PreviousSendsPage'
-import AboutPage from './AboutPage'
+import ClaimPage from '../ClaimPage/ClaimPage'
+import SendPage from '../SendPage/SendPage'
+import LandingPage from '../LandingPage/LandingPage'
+import PreviousSendsPage from '../PreviousSendsPage/PreviousSendsPage'
+import AboutPage from '../AboutPage/AboutPage'
 
-import { net, contractScriptHash } from './AppConfig'
+import { net, contractScriptHash } from '../../AppConfig'
 
 const App = () => (
   <Router>

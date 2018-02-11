@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 
 import { wallet, u } from '@cityofzion/neon-js'
 
-import { SENDER_HISTORY_PREFIX, GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
-import { neonGetTxHistory, neonGetTxInfo, neonGetTxAssets } from '../lib/storage'
-import { neonJsClaim } from '../lib/invocations'
+import { SENDER_HISTORY_PREFIX, GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
+import { neonGetTxHistory, neonGetTxInfo, neonGetTxAssets } from '../../../lib/storage'
+import { neonJsClaim } from '../../../lib/invocations'
 
 class OwnedEscrowList extends Component {
   state = {

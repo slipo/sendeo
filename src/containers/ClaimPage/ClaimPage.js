@@ -9,14 +9,14 @@ import {
 import Sticky from 'react-stickynode'
 import ScrollableAnchor from 'react-scrollable-anchor'
 
-import { neonJsClaim } from '../lib/invocations'
-import { GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
+import { neonJsClaim } from '../../lib/invocations'
+import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../lib/const'
 
-import GetBalanceOf from '../components/GetBalanceOf'
-import GetTotalAllTime from '../components/GetTotalAllTime'
+import GetBalanceOf from './Balance/Balance'
+import GetTotalAllTime from './TotalAllTime/TotalAllTime'
 
 import './ClaimPage.css'
-import logo from '../images/logo-flat.png'
+import logo from '../../images/logo-flat.png'
 
 class ClaimPage extends Component {
   constructor(props) {

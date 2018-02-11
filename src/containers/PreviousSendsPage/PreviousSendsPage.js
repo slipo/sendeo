@@ -11,10 +11,10 @@ import { wallet, u } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
 import ScrollableAnchor, { configureAnchors } from 'react-scrollable-anchor'
 
-import OwnedEscrowList from '../components/OwnedEscrowList'
-import CheckLoggedIn from '../components/CheckLoggedIn'
+import OwnedEscrowList from './OwnedEscrowList/OwnedEscrowList'
+import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
 import './PreviousSendsPage.css'
-import logo from '../images/logo-flat.png'
+import logo from '../../images/logo-flat.png'
 
 configureAnchors({ offset: -80, scrollDuration: 500 })
 

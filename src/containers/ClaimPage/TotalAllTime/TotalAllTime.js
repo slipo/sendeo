@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Neon, { api, u } from '@cityofzion/neon-js'
 
-import { GAS_ASSET_ID, NEO_ASSET_ID } from '../lib/const'
-import { neonGetTotalAllTime } from '../lib/storage'
+import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
+import { neonGetTotalAllTime } from '../../../lib/storage'
 
 class GetTotalAllTime extends Component {
   componentDidMount() {
@@ -16,7 +16,7 @@ class GetTotalAllTime extends Component {
       .then(res => {
         if (res.result) {
           // sooper ugly but race conditions i think (TODO)
-          if (assetId == GAS_ASSET_ID) {
+          if (assetId === GAS_ASSET_ID) {
             this.props.setGasAllTimeState(u.fixed82num(res.result))
           } else {
             this.props.setNeoAllTimeState(u.fixed82num(res.result))

@@ -11,12 +11,12 @@ import { wallet, u } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
 import * as qs from 'query-string'
 
-import CheckLoggedIn from '../components/CheckLoggedIn'
+import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
 import './SendPage.css'
-import logo from '../images/logo-flat.png'
-import neoLogo from '../images/neo-logo.svg'
-import secretUrlIcon from '../images/secret-url.svg'
-import pointingIcon from '../images/pointing.svg'
+import logo from '../../images/logo-flat.png'
+import neoLogo from '../../images/neo-logo.svg'
+import secretUrlIcon from '../../images/secret-url.svg'
+import pointingIcon from '../../images/pointing.svg'
 
 class SendPage extends Component {
   state = {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import Sticky from 'react-stickynode'
 
 import './AboutPage.css'
-import logo from '../images/logo-flat.png'
+import logo from '../../images/logo-flat.png'
 
 class AboutPage extends Component {
   render() {
