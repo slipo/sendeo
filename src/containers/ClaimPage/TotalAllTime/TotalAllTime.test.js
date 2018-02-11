@@ -29,8 +29,6 @@ it('calls neonGetTotalAllTime with proper props', (done) => {
 })
 
 it('shows proper NEO/GAS amounts', async () => {
-  let wrapper
-
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => {
       NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
@@ -43,40 +41,34 @@ it('shows proper NEO/GAS amounts', async () => {
     })
   })
 
-  wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
   await Promise.resolve().then()
   expect(wrapper.text().includes('3 GAS')).toEqual(true)
   expect(wrapper.text().includes('2 NEO')).toEqual(true)
 })
 
 it('error on invalid response', async () => {
-  let wrapper
-
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => { resolve({}) })
   })
-  wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
   await Promise.resolve().then()
   expect(wrapper.state('errorMsg')).not.toEqual('')
 })
 
 it('error shown on exception', async () => {
-  let wrapper
-
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => { reject(Error('Error Message')) })
   })
-  wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
   await Promise.resolve().then()
   expect(wrapper.text().includes('Error Message')).toEqual(true)
 })
 
 it('defaults to empty', async () => {
-  let wrapper
-
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => { resolve({}) })
   })
-  wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
   expect(wrapper.text()).toEqual('')
 })
