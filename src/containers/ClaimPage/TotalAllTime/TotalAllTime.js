@@ -1,40 +1,74 @@
 import React, { Component } from 'react'
-import Neon, { api, u } from '@cityofzion/neon-js'
+import { u } from '@cityofzion/neon-js'
+import PropTypes from 'prop-types'
 
-import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
 import { neonGetTotalAllTime } from '../../../lib/storage'
+import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
 
-class GetTotalAllTime extends Component {
-  componentDidMount() {
-    const { contractScriptHash, net } = this.props
-    this.getTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
-    this.getTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
+class TotalAllTime extends Component {
+  state = {
+    totalAllTimeNeo: 0,
+    totalAllTimeGas: 0,
+    errorMsg: '',
   }
 
-  getTotalAllTime = (contractScriptHash, assetId, net) => {
-    neonGetTotalAllTime(contractScriptHash, assetId, net)
-      .then(res => {
-        if (res.result) {
-          // sooper ugly but race conditions i think (TODO)
-          if (assetId === GAS_ASSET_ID) {
-            this.props.setGasAllTimeState(u.fixed82num(res.result))
-          } else {
-            this.props.setNeoAllTimeState(u.fixed82num(res.result))
-          }
+  componentDidMount() {
+    const { contractScriptHash, net } = this.props
+
+    let gasAllTime
+
+    neonGetTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
+      .then(gasResponse => {
+        if (gasResponse.result) {
+          gasAllTime = u.fixed82num(gasResponse.result)
+          return neonGetTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
+        } else {
+          throw Error('Failed to retrieve GAS all time statistics')
+        }
+      })
+      .then(neoResponse => {
+        if (neoResponse.result) {
+          this.setState({
+            totalAllTimeNeo: u.fixed82num(neoResponse.result),
+            totalAllTimeGas: gasAllTime,
+          })
+        } else {
+          throw Error('Failed to retrieve NEO all time statistics')
         }
       })
       .catch((e) => {
         this.setState({
-          assetId: '',
           errorMsg: e.message,
-          isLoading: false,
         })
       })
   }
 
   render() {
-    return ''
+    const { totalAllTimeNeo, totalAllTimeGas, errorMsg } = this.state
+    let content = ''
+
+    if (errorMsg !== '') {
+      content = <div>Error loading all time stats: {errorMsg}</div>
+    } else if (totalAllTimeNeo > 0 || totalAllTimeGas > 0) {
+      content = (
+        <div className='panel panel-default text-center'>
+          <div className='panel-heading'>
+            <h3>Wow, did you know that...</h3>
+          </div>
+          <div className='panel-body'>
+            <p>People have used Sendeo to send {totalAllTimeGas} GAS and {totalAllTimeNeo} NEO in total!</p>
+          </div>
+        </div>
+      )
+    }
+
+    return content
   }
 }
 
-export default GetTotalAllTime
+TotalAllTime.propTypes = {
+  contractScriptHash: PropTypes.string,
+  net: PropTypes.string,
+}
+
+export default TotalAllTime

@@ -13,7 +13,7 @@ import { neonJsClaim } from '../../lib/invocations'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../lib/const'
 
 import GetBalanceOf from './Balance/Balance'
-import GetTotalAllTime from './TotalAllTime/TotalAllTime'
+import TotalAllTime from './TotalAllTime/TotalAllTime'
 
 import './ClaimPage.css'
 import logo from '../../images/logo-flat.png'
@@ -33,11 +33,8 @@ class ClaimPage extends Component {
       receivedTxId: props.match.params.receivedTxId,
       balanceLoading: true,
       txId: '',
-      txAmount: 0,
       txCreated: '',
       txNote: '',
-      totalAllTimeNeo: 0,
-      totalAllTimeGas: 0,
       spent: false,
       status: '',
       errorMsg: '',
@@ -47,14 +44,6 @@ class ClaimPage extends Component {
 
   setBalanceState = (assets, spent, txCreated, txNote) => {
     this.setState({ assets, spent, txCreated, txNote, balanceLoading: false })
-  }
-
-  setGasAllTimeState = (totalAllTimeGas) => {
-    this.setState({ totalAllTimeGas: totalAllTimeGas })
-  }
-
-  setNeoAllTimeState = (totalAllTimeNeo) => {
-    this.setState({ totalAllTimeNeo: totalAllTimeNeo })
   }
 
   isValidDestinationAddress = () => {
@@ -242,28 +231,15 @@ class ClaimPage extends Component {
                   </div>
                 }
 
-                { (this.state.totalAllTimeNeo > 0 || this.state.totalAllTimeGas > 0) && (this.state.totalAllTimeGas > this.state.txAmount || this.state.totalAllTimeNeo > this.state.txAmount) &&
-                  <div className='panel panel-default text-center'>
-                    <div className='panel-heading'>
-                      <h3>Wow, did you know that...</h3>
-                    </div>
-                    <div className='panel-body'>
-                      <p>You are not the first to receive GAS from this person. In fact they have now sent {this.state.totalAllTimeGas} GAS in total! TODO</p>
-                    </div>
-                  </div>
-                }
-
                 <GetBalanceOf
                   txId={ receivedTxId }
                   contractScriptHash={ contractScriptHash }
                   net={ net }
                   setBalanceState={ this.setBalanceState }
                 />
-                <GetTotalAllTime
+                <TotalAllTime
                   contractScriptHash={ contractScriptHash }
                   net={ net }
-                  setGasAllTimeState={ this.setGasAllTimeState }
-                  setNeoAllTimeState={ this.setNeoAllTimeState }
                 />
               </figure>
             </div>
