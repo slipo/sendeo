@@ -6,17 +6,15 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap'
-import Sticky from 'react-stickynode'
-import ScrollableAnchor from 'react-scrollable-anchor'
 
 import { neonJsClaim } from '../../lib/invocations'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../lib/const'
 
 import GetBalanceOf from './Balance/Balance'
 import TotalAllTime from './TotalAllTime/TotalAllTime'
+import Header from '../../components/Header/Header'
 
 import './ClaimPage.css'
-import logo from '../../images/logo-flat.png'
 
 class ClaimPage extends Component {
   constructor(props) {
@@ -115,32 +113,11 @@ class ClaimPage extends Component {
           </div>
         </header>
 
-        <Sticky>
-          <nav className='main-nav-outer'>
-            <div className='container'>
-              <ul className='main-nav'>
-                <li><Link to='/send?asset=neo'>Send NEO</Link></li>
-                <li><Link to='/send?asset=gas'>Send GAS</Link></li>
-                <li className='small-logo'>
-                  <Link to='/'>
-                    <img src={ logo } alt='Sendeo Logo Flat' />
-                  </Link>
-                </li>
-                <li><Link to='/previousSends'>Your History</Link></li>
-                <li><Link to='/about'>About</Link></li>
-              </ul>
-              <a className='res-nav_click' href='#'>
-                <i className='fa-bars' />
-              </a>
-            </div>
-          </nav>
-        </Sticky>
+        <Header />
 
         <section className='main-section'>
           <div className='container'>
-            <ScrollableAnchor id={ 'get-started' } offset={ '400' }>
-              <h2>So What Do I Do?</h2>
-            </ScrollableAnchor>
+            <h2>So What Do I Do?</h2>
             <h6>You need to provide a public NEO wallet address so the smart contract knows where to send to.</h6>
             <div className='row'>
               <div className='col-sm-7 wow fadeInLeft delay-05s'>
@@ -245,13 +222,6 @@ class ClaimPage extends Component {
             </div>
           </div>
         </section>
-
-        <pre>
-          <code>
-            { JSON.stringify(this.state, null, 2) }
-          </code>
-        </pre>
-
       </div>
     )
   }

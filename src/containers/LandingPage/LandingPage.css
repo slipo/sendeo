@@ -1,20 +1,10 @@
-
-.header {
-  background-color: black;
-  background-image: none;
-  padding: 50px 0;
-  min-height: 100vh;
-}
-
-.header h2 {
-  color: white;
-  font-weight: 100;
-  letter-spacing: 0;
-}
-
-.header .video-container {
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
-  padding: 25px 0;
+.logo-image-container  {
   margin-bottom: 25px;
+}
+
+.video-container {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  margin: 25px 0 ;
+  padding: 25px 0;
 }

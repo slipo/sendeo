@@ -11,9 +11,10 @@ import { wallet, u } from '@cityofzion/neon-js'
 import Sticky from 'react-stickynode'
 import * as qs from 'query-string'
 
+import Header from '../../components/Header/Header'
 import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
 import './SendPage.css'
-import logo from '../../images/logo-flat.png'
+
 import neoLogo from '../../images/neo-logo.svg'
 import secretUrlIcon from '../../images/secret-url.svg'
 import pointingIcon from '../../images/pointing.svg'
@@ -146,32 +147,14 @@ class SendPage extends Component {
 
     return (
       <div>
-        <Sticky>
-          <nav className='main-nav-outer'>
-            <div className='container'>
-              <ul className='main-nav'>
-                <li><Link to='/send?asset=neo'>Send NEO</Link></li>
-                <li><Link to='/send?asset=gas'>Send GAS</Link></li>
-                <li className='small-logo'>
-                  <Link to='/'>
-                    <img src={ logo } alt='Sendeo Logo Flat' />
-                  </Link>
-                </li>
-                <li><Link to='/previousSends'>Your History</Link></li>
-                <li><Link to='/about'>About</Link></li>
-              </ul>
-              <a className='res-nav_click' href='#'>
-                <i className='fa-bars' />
-              </a>
-              <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
-            </div>
-          </nav>
-        </Sticky>
+        <span>
+          <Header />
+          <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
+        </span>
 
         <section className='main-section'>
           <div className='container'>
-            <h2>Send { assetType }</h2>
-            <h6>Sendeo is a smart contract that serves as a temporary escrow account that can be claimed by others.</h6>
+            <h2 className='page-title'>Sendeo is a smart contract that serves as a temporary escrow account that can be claimed by others.</h2>
             <div className='row'>
               <div className='col-sm-7 wow fadeInLeft delay-05s left-side'>
                 <div className='service-list'>

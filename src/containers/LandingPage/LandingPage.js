@@ -1,19 +1,20 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../../images/logo-stacked.png'
+
+import stackedLogo from '../../images/sendeo-logo-stacked.png'
 import './LandingPage.css'
 
 class LandingPage extends Component {
   render() {
     return (
       <div>
-        <header className='header' id='header'>
-          <div className='container'>
-            <figure className='animated fadeInDown delay-07s'>
-              <img src={ logo } />
-              <figure className='animated fadeInLeft delay-07s'>
-                <h2>The easiest way to share the NEO blockchain</h2>
-              </figure>
+        <section className='main-section'>
+          <div className='container text-center'>
+            <figure className='logo-image-container animated fadeInDown delay-07s'>
+              <img src={ stackedLogo } />
+            </figure>
+            <figure className='animated fadeInLeft delay-07s'>
+              <h3>The easiest way to share the NEO blockchain</h3>
             </figure>
 
             <figure className='video-container animated fadeInRight delay-07s'>
@@ -22,7 +23,7 @@ class LandingPage extends Component {
 
             <Link to='/send' className='link animated fadeInUp delay-1s servicelink'>Get Started</Link>
           </div>
-        </header>
+        </section>
       </div>
     )
   }
