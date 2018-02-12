@@ -47,9 +47,24 @@ it('shows proper NEO/GAS amounts', async () => {
   expect(wrapper.text().includes('2 NEO')).toEqual(true)
 })
 
-it('error on invalid response', async () => {
+it('error on invalid GAS response', async () => {
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => { resolve({}) })
+  })
+  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  await Promise.resolve().then()
+  expect(wrapper.state('errorMsg')).not.toEqual('')
+})
+
+it('error on invalid NEO response', async () => {
+  NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
+    return new Promise((resolve, reject) => {
+      NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
+        return new Promise((resolve, reject) => { resolve({}) })
+      })
+
+      resolve({ result: '00a3e111' })
+    })
   })
   const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
   await Promise.resolve().then()
