@@ -28,7 +28,7 @@ jobs:
 
       - run: npm install
 
-      - run: npm install -g codecov
+      - run: npm install codecov
 
       - save_cache:
           paths:
@@ -38,5 +38,5 @@ jobs:
       # run tests!
       - run: CI=true npm test
 
-      - run: codecov --token=992bb594-975c-4185-ae78-9a6d9c72aace
+      - run: ./node_modules/codecov/bin/codecov --token=992bb594-975c-4185-ae78-9a6d9c72aace
 
