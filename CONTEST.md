@@ -16,7 +16,7 @@ The idea of this dApp is to bring more people into the NEO community and get the
 
 ## Quality of documentation (english required)
 
-There's this, the readme, the dApp itself and the comments in the contract and the React code. We've made an effort to write automated tests which is, of course, a form of documentation.
+There's this, the readme, the dApp website itself and the comments in the contract and the React code. We've made an effort to write automated tests which is, of course, a form of documentation.
 
 ## Community presence
 
@@ -53,7 +53,7 @@ The following work was done for or inspired by this project:
 * [Neoscan Docker Hub image](https://hub.docker.com/r/slipoh/neo-scan/)
 * [NeonDB + privnet with gas docker compose](https://gist.github.com/slipo/f18f1a0b5e6adb7b0bf172b93379d891)
 * [NeonDB Docker Hub Image](https://hub.docker.com/r/slipoh/neon-wallet-db/) from [slipo's neon-wallet-db repo](https://github.com/CityOfZion/neon-wallet-db)
-* [neo-kude](https://github.com/slipo/neo-kube)
+* [neo-kube](https://github.com/slipo/neo-kube)
 
 ### awesome-neo
 
