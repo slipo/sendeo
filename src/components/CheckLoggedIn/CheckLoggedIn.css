@@ -1,11 +1,12 @@
 #neo-link-status-container {
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0px;
   padding: 10px 25px 5px;
   border-radius: 0;
   height: 51px;
   line-height: 51px;
+  z-index: 10;
 }
 
 #neo-link-status-container .status-title {

@@ -25,7 +25,8 @@
 }
 
 .service-list-col1.smaller-image img {
-  max-height: 200px;
+  max-height: 100px;
+  max-width: 200px;
 }
 
 .service-list h3 {
@@ -36,40 +37,4 @@
 .service-list p {
   line-height: 1.25em;
   letter-spacing: 0.03em;
-}
-
-.form-container {
-  margin-top: 50px;
-  padding-left: 50px;
-}
-
-.form-container input[type=text] {
-  border: 0;
-  box-shadow: none;
-  border-bottom: 3px solid black;
-  font-size: 32px;
-  font-weight: bold;
-  border-radius: 0;
-}
-
-.modal-outer {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-color: rgba(0,0,0,0.8);
-  z-index: 9;
-}
-
-.modal-inner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  box-shadow:0 4px 5px -3px #ececec;
-  background-color: white;
-  padding: 25px;
-  max-width: 500px;
 }

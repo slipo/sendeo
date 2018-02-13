@@ -1,0 +1,13 @@
+.form-container {
+  margin-top: 50px;
+  padding-left: 50px;
+}
+
+.form-container input[type=text] {
+  border: 0;
+  box-shadow: none;
+  border-bottom: 3px solid black;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 0;
+}

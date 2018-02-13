@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-import Header from '../../components/Header/Header'
 import OwnedEscrowList from './OwnedEscrowList/OwnedEscrowList'
 import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
+import Header from '../../components/Header/Header'
 
 import './PreviousSendsPage.css'
 
@@ -22,10 +22,6 @@ class PreviousSends extends Component {
     this.setState({ extensionState: { neoLinkConnected, isLoggedIn, address } })
   }
 
-  setPreviousSendsState = (previousSends) => {
-    this.setState({ previousSends })
-  }
-
   render() {
     const {
       extensionState,
@@ -35,10 +31,8 @@ class PreviousSends extends Component {
 
     return (
       <div>
-        <span>
-          <Header />
-          <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
-        </span>
+        <Header />
+        <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
 
         <section className='main-section'>
           <div className='container'>
@@ -53,7 +47,6 @@ class PreviousSends extends Component {
                   <OwnedEscrowList
                     address={ extensionState.address }
                     contractScriptHash={ contractScriptHash }
-                    setPreviousSendsState={ this.setPreviousSendsState }
                     net={ net }
                   />
                 }

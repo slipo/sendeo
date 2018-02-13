@@ -24,12 +24,6 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 9;
 }
 
-.tx-container {
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .button-container {
   margin-bottom: 25px;
 }

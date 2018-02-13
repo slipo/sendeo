@@ -39,42 +39,29 @@ class CheckLoggedIn extends Component {
 
   render() {
     const { extensionState } = this.props
+    const { isLoading } = this.state
 
-    let content
     let statusText
     let statusClass
 
     console.log('extensionState', extensionState)
-    if (extensionState.isLoggedIn === true) {
-      statusClass = 'success'
-      statusText = <i className='fa fa-fw fa-check' />
-      content = (
-        <p className='text-right'>
-          <small>
-            <a href={ `http://35.192.230.39:5000/v2/address/balance/${extensionState.address}` } target='_blank'>View Wallet</a>
-          </small>
-        </p>
-      )
-    } else if (extensionState.neoLinkConnected === true) {
-      statusClass = 'warning'
-      statusText = <i className='fa fa-fw fa-warning' />
-      content = (
-        <p className='text-right'>
-          <small>Once you unlock NeoLink, you will be able to send the transaction through the NEO blckchain.</small>
-        </p>
-      )
-    } else if (this.state.loading) {
-      statusText = <i className='fa fa-fw fa-spin fa-spinner' />
+    if (!isLoading) {
+      if (extensionState.isLoggedIn === true) {
+        statusClass = 'success'
+        statusText = <i className='fa fa-fw fa-check' />
+      } else if (extensionState.neoLinkConnected === true) {
+        statusClass = 'warning'
+        statusText = <i className='fa fa-fw fa-warning' />
+      } else if (this.state.loading) {
+        statusText = <i className='fa fa-fw fa-spin fa-spinner' />
+      } else {
+        statusClass = 'danger'
+        statusText = <i className='fa fa-fw fa-exclamation-triangle' />
+      }
     } else {
-      statusClass = 'danger'
-      statusText = <i className='fa fa-fw fa-exclamation-triangle' />
-      content = (
-        <p className='text-right'>
-          <small>Please install the <a href='https://github.com/slipo/neolink/tree/dapp'>NeoLink browser extension</a> and then refresh this page.</small>
-        </p>
-      )
+      statusClass = 'info'
+      statusText = <i className='fa fa-fw fa-spinner fa-spin' />
     }
-
     return (
       <div id='neo-link-status-container' className={ `text-right alert alert-${statusClass}` }>
         <div className='status-title lead'>NeoLink: <strong>{statusText}</strong></div>

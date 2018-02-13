@@ -1,8 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
-
-import Sticky from 'react-stickynode'
-
 import Header from '../../components/Header/Header'
 import './AboutPage.css'
 
@@ -11,7 +7,6 @@ class AboutPage extends Component {
     return (
       <div>
         <Header />
-
         <section className='main-section'>
           <div className='container'>
             <h2>About Sendeo</h2>

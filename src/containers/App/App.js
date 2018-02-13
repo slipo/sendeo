@@ -6,6 +6,8 @@ import '../../knight-theme/style.css'
 import '../../knight-theme/animate.css'
 import '../../knight-theme/responsive.css'
 
+import Header from '../../components/Header/Header'
+
 import './App.css'
 
 import ClaimPage from '../ClaimPage/ClaimPage'
@@ -17,21 +19,23 @@ import AboutPage from '../AboutPage/AboutPage'
 import { net, contractScriptHash } from '../../AppConfig'
 
 const App = () => (
-  <Router>
-    <Switch>
-      <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-      />
-      <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-      />
-      <Route path='/about' render={ props => <AboutPage { ...props } /> }
-      />
-      <Route path='/send' render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-      />
-      <Route
-        render={ props => <LandingPage /> }
-      />
-    </Switch>
-  </Router>
+  <div>
+    <Router>
+      <Switch>
+        <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+        />
+        <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+        />
+        <Route path='/about' render={ props => <AboutPage { ...props } /> }
+        />
+        <Route path='/send' render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+        />
+        <Route
+          render={ props => <LandingPage /> }
+        />
+      </Switch>
+    </Router>
+  </div>
 )
 
 export default App

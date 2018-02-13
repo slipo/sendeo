@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import Sticky from 'react-stickynode'
+import { Link } from 'react-router-dom'
 
 import logo from '../../images/sendeo-logo-inline-white.png'
 import './Header.css'

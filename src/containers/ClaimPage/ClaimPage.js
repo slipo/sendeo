@@ -102,17 +102,6 @@ class ClaimPage extends Component {
 
     return (
       <div>
-        <header className='header' id='header'>
-          <div className='container'>
-            <figure className='animated fadeInDown delay-07s' />
-            <h1 className='animated fadeInDown delay-07s'>Somebody just sent you some crypto currency!</h1>
-            <ul className='we-create animated fadeInUp delay-1s'>
-              <li>Specifically they sent you NEO or GAS. NEO is a groundbreaking cryptocurrency for building smart contracts and more.</li>
-            </ul>
-            <a className='link animated fadeInUp delay-1s servicelink' href='#get-started'>Claim Now</a>
-          </div>
-        </header>
-
         <Header />
 
         <section className='main-section'>
@@ -137,7 +126,7 @@ class ClaimPage extends Component {
                     <i className='fa-bullhorn' />
                   </div>
                   <div className='service-list-col2'>
-                    <h3><a href='#' target='_blank'>NeoLink Chrome Extension</a></h3>
+                    <h3><a href='#' target='_blank' rel='noopener noreferrer'>NeoLink Chrome Extension</a></h3>
                     <p>Simple and easy way to get a wallet that you can interact with inside Chrome.</p>
                   </div>
                 </div>
@@ -204,7 +193,7 @@ class ClaimPage extends Component {
                 { this.state.status === 'success' &&
                   <div className='alert alert-success text-center'>
                     <p className='lead'><strong>Success!</strong></p>
-                    <p>The transaction went through and can be seen <a href={ `http://35.192.230.39:5000/v2/transaction/${this.state.txId}` } target='_blank'>by clicking here.</a> You will have to wait a few seconds to let the block get processed.</p>
+                    <p>The transaction went through and can be seen <a href={ `http://35.192.230.39:5000/v2/transaction/${this.state.txId}` } target='_blank' rel='noopener noreferrer'>by clicking here.</a> You will have to wait a few seconds to let the block get processed.</p>
                   </div>
                 }
 
