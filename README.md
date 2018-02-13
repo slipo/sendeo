@@ -24,7 +24,7 @@ You'll get a link which you can send to the recipient.
 
 # History
 
-We created this as part of the [second City of Zion dApp contest](https://cityofzion.io/dapps/2).
+We created this as part of the [second City of Zion dApp contest](https://cityofzion.io/dapps/2). More info on our submission can be found in the [CONTEST.md file](/CONTEST.md).
 
 # Authors
 
