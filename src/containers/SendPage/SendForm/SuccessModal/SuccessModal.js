@@ -35,7 +35,7 @@ class SuccessModal extends Component {
 
           <p className='text-center small'>Whoa! We will only show you this once, so keep it safe. In one week's time, if this deposit hasn't been claimed, you can come back here and get it.</p>
 
-          <p className='text-center'><a hef={ `/send?asset=${assetType}` }>Click here to send some more.</a></p>
+          <p className='text-center'><a href={ `/send?asset=${assetType}` }>Click here to send some more.</a></p>
         </div>
       </div>
     )

@@ -7,6 +7,7 @@ import {
   FormGroup,
   HelpBlock,
 } from 'react-bootstrap'
+import Modal from 'react-modal'
 import * as qs from 'query-string'
 import { wallet, u } from '@cityofzion/neon-js'
 
@@ -200,14 +201,14 @@ class SendForm extends Component {
             <p className='text-center terms-text'><small>By using Sendeo, you acknowledge that you are using beta software, at your own risk.</small></p>
           </div>
 
-          { depositSuccess &&
+          <Modal isOpen={ depositSuccess } >
             <SuccessModal
               txId={ txId }
               assetType={ assetType }
               amountSent={ amountToSend }
               escrowPrivateKey={ escrowPrivateKey }
             />
-          }
+          </Modal>
         </form>
       </div>
     )
