@@ -1,13 +1,6 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import {
-  Button,
-  ButtonGroup,
-  FormControl,
-  FormGroup,
-  HelpBlock,
-} from 'react-bootstrap'
-import { wallet, u } from '@cityofzion/neon-js'
 
 import Header from '../../components/Header/Header'
 import OwnedEscrowList from './OwnedEscrowList/OwnedEscrowList'
@@ -73,6 +66,11 @@ class PreviousSends extends Component {
       </div>
     )
   }
+}
+
+PreviousSends.propTypes = {
+  contractScriptHash: PropTypes.string,
+  net: PropTypes.string,
 }
 
 export default PreviousSends

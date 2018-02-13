@@ -199,7 +199,7 @@ class SendPage extends Component {
                       type='text'
                       value={ amountToSend }
                       placeholder=''
-                      autofocus='true'
+                      autoFocus
                       onChange={ this.handleChangeToAmount }
                       bsSize='large'
                       className='text-right'

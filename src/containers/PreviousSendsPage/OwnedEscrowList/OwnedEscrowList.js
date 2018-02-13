@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import { wallet, u } from '@cityofzion/neon-js'
-
-import { SENDER_HISTORY_PREFIX, GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
-import { neonGetTxHistory, neonGetTxInfo, neonGetTxAssets } from '../../../lib/storage'
-import { neonJsClaim } from '../../../lib/invocations'
+import OwnedEscrowListRow from './OwnedEscrowListRow/OwnedEscrowListRow'
+import { SENDER_HISTORY_PREFIX } from '../../../lib/const'
+import { neonGetTxHistory } from '../../../lib/storage'
 
 class OwnedEscrowList extends Component {
   state = {
@@ -22,8 +21,9 @@ class OwnedEscrowList extends Component {
   getSentTransactions = (address, contractScriptHash, net) => {
     neonGetTxHistory(SENDER_HISTORY_PREFIX, address, contractScriptHash, net)
       .then((results) => {
-        results.map(txId => {
-          this.getTxInfo(txId, contractScriptHash, net)
+        this.setState({
+          previousSends: results,
+          isLoading: false,
         })
       })
       .catch((e) => {
@@ -31,65 +31,19 @@ class OwnedEscrowList extends Component {
           errorMsg: e.message,
           isLoading: false,
         })
-        console.log(e)
-      })
-  }
-
-  rescindPreviousSend = (txId) => {
-    const { address, contractScriptHash, net } = this.props
-
-    const tmpAccount = new wallet.Account()
-    neonJsClaim(address, tmpAccount.WIF, net, contractScriptHash, txId)
-      .then((res) => {
-        console.log('res', res)
-      })
-      .catch((e) => {
-        console.log('error', e)
-      })
-  }
-
-  getTxInfo = (txId, contractScriptHash, net) => {
-    neonGetTxInfo(txId, contractScriptHash, net)
-      .then((result) => {
-        return neonGetTxAssets(u.reverseHex(txId), contractScriptHash, net)
-          .then((assets) => {
-            let newPreviousSends = this.state.previousSends
-            newPreviousSends.push({
-              txId: u.reverseHex(txId),
-              note: result.note,
-              created: result.created,
-              spent: result.spent,
-              canRescind: result.canRescind,
-              assets: assets,
-            })
-
-            this.setState({ previousSends: newPreviousSends, isLoading: false })
-          })
-      })
-      .catch((e) => {
-        console.error(e)
       })
   }
 
   renderPreviousSendRows() {
     const { previousSends } = this.state
-    const { contractScriptHash, net } = this.props
+    const { address, contractScriptHash, net } = this.props
 
     let rows = []
 
     if (previousSends) {
-      previousSends.map(previousSend => {
+      previousSends.map(txId => {
         rows.push(
-          <tr key={ previousSend.txId }>
-            <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }>{previousSend.txId}</td>
-            <td>
-              { previousSend.assets[GAS_ASSET_ID] > 0 && <div>{ previousSend.assets[GAS_ASSET_ID] } GAS</div>}
-              { previousSend.assets[NEO_ASSET_ID] > 0 && <div>{ previousSend.assets[NEO_ASSET_ID] } NEO</div>}
-            </td>
-            <td>{previousSend.note}</td>
-            <td>{previousSend.created}</td>
-            <td>{ previousSend.spent ? <div>Already claimed</div> : previousSend.canRescind ? <a href='#' onClick={ () => { this.rescindPreviousSend(previousSend.txId) } }>Rescind</a> : <span>Not Yet</span> }</td>
-          </tr>
+          <OwnedEscrowListRow txId={ txId } address={ address } contractScriptHash={ contractScriptHash } net={ net } />
         )
       })
     }
@@ -98,7 +52,7 @@ class OwnedEscrowList extends Component {
   }
 
   render() {
-    const { isLoading } = this.state
+    const { isLoading, errorMsg } = this.state
 
     return (
       <table className='table table-striped table-hover'>
@@ -112,6 +66,13 @@ class OwnedEscrowList extends Component {
           </tr>
         </thead>
         <tbody>
+          { errorMsg !== '' &&
+            <tr>
+              <td colSpan='5' className='text-center primary'>
+                ERROR: { errorMsg }
+              </td>
+            </tr>
+          }
           { isLoading &&
             <tr>
               <td colSpan='5' className='text-center primary'>
@@ -125,6 +86,12 @@ class OwnedEscrowList extends Component {
       </table>
     )
   }
+}
+
+OwnedEscrowList.propTypes = {
+  contractScriptHash: PropTypes.string,
+  net: PropTypes.string,
+  address: PropTypes.string,
 }
 
 export default OwnedEscrowList
