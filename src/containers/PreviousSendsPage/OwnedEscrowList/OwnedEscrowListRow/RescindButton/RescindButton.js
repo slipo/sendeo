@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import { wallet } from '@cityofzion/neon-js'
 
-import { neonJsClaim } from '../../../../../lib/invocations'
+import { neonJsClaim } from '../../../../../lib/neonWrappers'
 
 class RescindButton extends Component {
   state = {

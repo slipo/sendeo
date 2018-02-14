@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
 import {
   Button,
   FormControl,
@@ -7,7 +6,7 @@ import {
   HelpBlock,
 } from 'react-bootstrap'
 
-import { neonJsClaim } from '../../lib/invocations'
+import { neonJsClaim } from '../../lib/neonWrappers'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../lib/const'
 
 import GetBalanceOf from './Balance/Balance'

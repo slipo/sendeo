@@ -2,7 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import OwnedEscrowList from './OwnedEscrowList'
-import * as NeonStorageWrappers from '../../../lib/storage'
+import * as NeonStorageWrappers from '../../../lib/neonWrappers'
 
 it('gets rows if transactions exist', async () => {
   NeonStorageWrappers.neonGetTxHistory = jest.fn((prefix, address, contractScriptHash, net) => {

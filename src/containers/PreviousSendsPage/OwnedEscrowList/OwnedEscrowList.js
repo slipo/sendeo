@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import OwnedEscrowListRow from './OwnedEscrowListRow/OwnedEscrowListRow'
 import { SENDER_HISTORY_PREFIX } from '../../../lib/const'
-import { neonGetTxHistory } from '../../../lib/storage'
+import { neonGetTxHistory } from '../../../lib/neonWrappers'
 
 class OwnedEscrowList extends Component {
   state = {

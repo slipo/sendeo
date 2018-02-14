@@ -2,7 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import OwnedEscrowListRow from './OwnedEscrowListRow'
-import * as NeonStorageWrappers from '../../../../lib/storage'
+import * as NeonStorageWrappers from '../../../../lib/neonWrappers'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../../lib/const'
 
 it('calls neonGetTxAssets with proper props', (done) => {

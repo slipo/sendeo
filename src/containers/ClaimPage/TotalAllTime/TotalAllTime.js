@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { u } from '@cityofzion/neon-js'
 import PropTypes from 'prop-types'
 
-import { neonGetTotalAllTime } from '../../../lib/storage'
+import { neonGetTotalAllTime } from '../../../lib/neonWrappers'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
 
 class TotalAllTime extends Component {

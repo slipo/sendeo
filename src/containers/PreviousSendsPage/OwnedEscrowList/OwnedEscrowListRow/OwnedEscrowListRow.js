@@ -5,7 +5,7 @@ import { u } from '@cityofzion/neon-js'
 
 import RescindButton from './RescindButton/RescindButton'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../../lib/const'
-import { neonGetTxInfo, neonGetTxAssets } from '../../../../lib/storage'
+import { neonGetTxInfo, neonGetTxAssets } from '../../../../lib/neonWrappers'
 
 class OwnedEscrowListRow extends Component {
   state = {

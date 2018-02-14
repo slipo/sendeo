@@ -1,7 +1,7 @@
 import { Component } from 'react'
 import { u } from '@cityofzion/neon-js'
 
-import { neonGetTxAssets, neonGetTxInfo, neonGetIsUnspent } from '../../../lib/storage'
+import { neonGetTxAssets, neonGetTxInfo } from '../../../lib/neonWrappers'
 
 class GetBalanceOf extends Component {
   componentDidMount() {
