@@ -26,7 +26,7 @@ class OwnedEscrowListRow extends Component {
               note: result.note,
               created: result.created,
               spent: result.spent,
-              canRescind: true, //result.canRescind,
+              canRescind: result.canRescind,
               assets: assets,
               isLoading: false,
             })

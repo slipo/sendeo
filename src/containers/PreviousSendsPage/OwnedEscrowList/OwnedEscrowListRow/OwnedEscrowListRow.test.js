@@ -89,6 +89,36 @@ it('shows rescind on if can resind', async () => {
   expect(wrapper.text().includes('Rescind')).toEqual(true)
 })
 
+it('tells user rescind is not available', async () => {
+  NeonStorageWrappers.neonGetTxInfo = jest.fn((txId, contractScriptHash, net) => {
+    return new Promise((resolve, reject) => {
+      resolve({
+        note: 'NOTE',
+        created: 'CREATED',
+        spent: false,
+        canRescind: false,
+      })
+    })
+  })
+
+  NeonStorageWrappers.neonGetTxAssets = jest.fn((txId, contractScriptHash, net) => {
+    return new Promise((resolve, reject) => {
+      const assets = {}
+      assets[GAS_ASSET_ID] = 33
+      assets[NEO_ASSET_ID] = 22
+      resolve(assets)
+    })
+  })
+
+  const txId = 'c3b4d32715ff8de78dd8adecef2b0c1aae142660fede50e359b336fb2574d1c6'
+  const wrapper = mount(<table><tbody><OwnedEscrowListRow address='123' txId={ txId } contractScriptHash='TestContract' net='TestNet' /></tbody></table>)
+
+  await Promise.resolve().then()
+
+  expect(wrapper.text().includes('Not Yet')).toEqual(true)
+})
+
+
 it('shows error on error', async () => {
   const txIdProp = 'c3b4d32715ff8de78dd8adecef2b0c1aae142660fede50e359b336fb2574d1c6'
 
