@@ -46,7 +46,7 @@ class OwnedEscrowListRow extends Component {
 
     let rescindColumn
     if (spent) {
-      rescindColumn = <div>Already claimed</div>
+      rescindColumn = <div>Already claimed/rescinded</div>
     } else if (canRescind) {
       rescindColumn = <RescindButton contractScriptHash={ contractScriptHash } net={ net } address={ address } txId={ u.reverseHex(txId) } />
     } else {

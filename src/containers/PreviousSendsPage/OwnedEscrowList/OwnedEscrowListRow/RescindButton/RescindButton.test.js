@@ -4,7 +4,6 @@ import { wallet } from '@cityofzion/neon-js'
 
 import RescindButton from './RescindButton'
 import * as NeonInvocationWrappers from '../../../../../lib/invocations'
-import { truncateSync } from 'fs';
 
 it('calls neonJsClaim with proper props', (done) => {
   NeonInvocationWrappers.neonJsClaim = jest.fn((address, wif, net, contractScriptHash, txId) => {
