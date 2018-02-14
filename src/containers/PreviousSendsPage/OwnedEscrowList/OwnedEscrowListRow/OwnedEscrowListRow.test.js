@@ -118,7 +118,6 @@ it('tells user rescind is not available', async () => {
   expect(wrapper.text().includes('Not Yet')).toEqual(true)
 })
 
-
 it('shows error on error', async () => {
   const txIdProp = 'c3b4d32715ff8de78dd8adecef2b0c1aae142660fede50e359b336fb2574d1c6'
 

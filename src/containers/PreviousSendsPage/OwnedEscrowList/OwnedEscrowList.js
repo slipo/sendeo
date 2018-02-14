@@ -81,7 +81,7 @@ class OwnedEscrowList extends Component {
             </tr>
           }
 
-          { !isLoading && this.renderPreviousSendRows() }
+          { errorMsg === '' && !isLoading && this.renderPreviousSendRows() }
         </tbody>
       </table>
     )
