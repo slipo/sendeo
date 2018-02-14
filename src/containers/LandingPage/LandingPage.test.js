@@ -6,5 +6,5 @@ import LandingPage from './LandingPage'
 
 it('renders without crashing', () => {
   const wrapper = mount(<App><LandingPage /></App>)
-  expect(wrapper.find('a').prop('href')).toEqual('/send')
+  expect(wrapper.find('.main-section a').prop('href')).toEqual('/send')
 })
