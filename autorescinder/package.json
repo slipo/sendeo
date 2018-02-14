@@ -1,0 +1,12 @@
+{
+  "name": "autorescinder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@cityofzion/neon-js": "^3.2.1",
+    "axios": "^0.17.1"
+  }
+}
