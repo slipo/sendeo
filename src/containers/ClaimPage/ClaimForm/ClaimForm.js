@@ -7,7 +7,7 @@ import {
 } from 'react-bootstrap'
 import Modal from 'react-modal'
 import ReceivedSuccessModal from './ReceivedSuccessModal/ReceivedSuccessModal'
-import { neonJsClaim } from '../../../lib/invocations'
+import { neonJsClaim } from '../../../lib/neonWrappers'
 import { net, contractScriptHash } from '../../../AppConfig'
 
 import './ClaimForm.css'

@@ -1,0 +1,21 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: autorescinder
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: autorescinder
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: autorescinder
+            image: gcr.io/[YOUR_PROJECT]/autorescinder:0.1
+            args:
+              - npm
+              - start

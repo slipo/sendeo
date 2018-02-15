@@ -5,7 +5,7 @@ import { u } from '@cityofzion/neon-js'
 
 import RescindButton from './RescindButton/RescindButton'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../../lib/const'
-import { neonGetTxInfo, neonGetTxAssets } from '../../../../lib/storage'
+import { neonGetTxInfo, neonGetTxAssets } from '../../../../lib/neonWrappers'
 
 class OwnedEscrowListRow extends Component {
   state = {
@@ -26,7 +26,7 @@ class OwnedEscrowListRow extends Component {
               note: result.note,
               created: result.created,
               spent: result.spent,
-              canRescind: true, //result.canRescind,
+              canRescind: result.canRescind,
               assets: assets,
               isLoading: false,
             })
@@ -46,7 +46,7 @@ class OwnedEscrowListRow extends Component {
 
     let rescindColumn
     if (spent) {
-      rescindColumn = <div>Already claimed</div>
+      rescindColumn = <div>Already claimed/rescinded</div>
     } else if (canRescind) {
       rescindColumn = <RescindButton contractScriptHash={ contractScriptHash } net={ net } address={ address } txId={ u.reverseHex(txId) } />
     } else {

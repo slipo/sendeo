@@ -1,0 +1,19 @@
+{
+  "name": "autorescinder",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "node bundle.js"
+  },
+  "dependencies": {
+    "@cityofzion/neon-js": "^3.2.1",
+    "axios": "^0.17.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "webpack": "^3.11.0"
+  }
+}
