@@ -59,6 +59,7 @@ class ClaimPage extends Component {
   };
 
   sendAssets = () => {
+
     this.setState({
       txId: '',
       status: 'loading',
