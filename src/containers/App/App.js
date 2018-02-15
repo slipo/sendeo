@@ -6,8 +6,6 @@ import '../../knight-theme/style.css'
 import '../../knight-theme/animate.css'
 import '../../knight-theme/responsive.css'
 
-import Header from '../../components/Header/Header'
-
 import './App.css'
 
 import ClaimPage from '../ClaimPage/ClaimPage'

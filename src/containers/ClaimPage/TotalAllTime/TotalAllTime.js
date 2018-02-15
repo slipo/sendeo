@@ -51,7 +51,7 @@ class TotalAllTime extends Component {
       content = <div>Error loading all time stats: {errorMsg}</div>
     } else if (totalAllTimeNeo > 0 || totalAllTimeGas > 0) {
       content = (
-        <div className='panel panel-default text-center'>
+        <div className='panel panel-default text-center m-t-50'>
           <div className='panel-heading'>
             <h3>Wow, did you know that...</h3>
           </div>

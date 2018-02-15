@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 
 import SendForm from './SendForm/SendForm'
 import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
@@ -70,7 +69,7 @@ class SendPage extends Component {
                 </div>
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s form-container'>
-                <h1>So, how much you sending?</h1>
+                <h1>So, how much you gonna send?</h1>
                 <SendForm neoLinkConnected={ extensionState.neoLinkConnected } isLoggedIn={ extensionState.isLoggedIn } />
               </figure>
             </div>
@@ -79,10 +78,6 @@ class SendPage extends Component {
       </div>
     )
   }
-}
-
-SendPage.propTypes = {
-
 }
 
 export default SendPage

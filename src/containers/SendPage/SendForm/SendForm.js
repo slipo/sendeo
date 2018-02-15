@@ -13,7 +13,7 @@ import { wallet, u } from '@cityofzion/neon-js'
 
 import SuccessModal from './SuccessModal/SuccessModal'
 import './SendForm.css'
-import { net, contractScriptHash } from '../../../AppConfig'
+import { contractScriptHash } from '../../../AppConfig'
 
 class SendForm extends Component {
   state = {
@@ -25,7 +25,6 @@ class SendForm extends Component {
       isLoggedIn: null,
       address: null,
     },
-
     sourcePrivateKey: '',
     escrowPrivatekey: '',
     txId: '',
@@ -116,6 +115,10 @@ class SendForm extends Component {
     }
   }
 
+  handleInputFocus = (event) => {
+    event.target.select()
+  }
+
   setAssetType(assetType) {
     this.setState({ assetType })
   }
@@ -168,6 +171,7 @@ class SendForm extends Component {
               onChange={ this.handleChangeToAmount }
               bsSize='large'
               className='text-right'
+              onFocus={ this.handleInputFocus }
             />
             <FormControl.Feedback />
             { assetType === 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
@@ -202,12 +206,14 @@ class SendForm extends Component {
           </div>
 
           <Modal isOpen={ depositSuccess } >
-            <SuccessModal
-              txId={ txId }
-              assetType={ assetType }
-              amountSent={ amountToSend }
-              escrowPrivateKey={ escrowPrivateKey }
-            />
+            { escrowPrivateKey &&
+              <SuccessModal
+                txId={ txId }
+                assetType={ assetType }
+                amountSent={ amountToSend }
+                escrowPrivateKey={ escrowPrivateKey }
+              />
+            }
           </Modal>
         </form>
       </div>
@@ -219,5 +225,7 @@ SendForm.propTypes = {
   neoLinkConnected: PropTypes.bool,
   isLoggedIn: PropTypes.bool,
 }
+
+Modal.setAppElement('#root')
 
 export default SendForm
