@@ -19,6 +19,7 @@ class SendForm extends Component {
   state = {
     amountToSend: 1,
     amountToSendIsValid: true,
+    messageValue: '',
     assetType: 'NEO',
     extensionState: {
       neoLinkConnected: null,
@@ -86,7 +87,6 @@ class SendForm extends Component {
 
   initiateDeposit = () => {
     const escrowAccount = new wallet.Account()
-
     this.setState({ escrowPrivateKey: escrowAccount.WIF })
 
     window.postMessage({
@@ -95,7 +95,7 @@ class SendForm extends Component {
         scriptHash: contractScriptHash,
         operation: 'deposit',
         arg1: u.reverseHex(escrowAccount.scriptHash),
-        arg2: u.str2hexstring('Awesome Note!'),
+        arg2: u.str2hexstring(this.state.messageValue),
         assetType: this.state.assetType,
         assetAmount: this.state.amountToSend,
       },
@@ -123,6 +123,12 @@ class SendForm extends Component {
     this.setState({ assetType })
   }
 
+  updateMessageValue(event) {
+    this.setState({
+      messageValue: event.target.value,
+    })
+  }
+
   componentWillUnmount() {
     clearTimeout(this.handleNeolinkResponse)
     window.removeEventListener('message', this.handleNeolinkResponse)
@@ -134,6 +140,7 @@ class SendForm extends Component {
       assetType,
       amountToSend,
       amountToSendIsValid,
+      message,
       depositSuccess,
       escrowPrivateKey,
     } = this.state
@@ -162,6 +169,7 @@ class SendForm extends Component {
             controlId='sendForm'
             validationState={ this.isValidAmountToSend() }
             style={ { 'minHeight': '100px' } }
+            className='quantity-field'
           >
             <FormControl
               type='text'
@@ -176,6 +184,20 @@ class SendForm extends Component {
             <FormControl.Feedback />
             { assetType === 'NEO' && <HelpBlock>Only whole numbers of NEO can be sent.</HelpBlock> }
           </FormGroup>
+
+          <div className='message-field'>
+            <FormGroup
+              controlId='sendFormMessage'
+            >
+              <FormControl
+                type='text'
+                placeholder='Attach a message? (optional)'
+                bsSize='large'
+                className='text-right'
+                value={ this.state.messageValue } onChange={ evt => this.updateMessageValue(evt) }
+              />
+            </FormGroup>
+          </div>
 
           <ButtonGroup justified>
             <Button

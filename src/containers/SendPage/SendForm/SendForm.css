@@ -11,4 +11,25 @@
   font-weight: bold;
   border-radius: 0;
   text-align: right;
+  position: relative;
+  right: 0;
 }
+
+.form-container .message-field input {
+  font-size: 11pt;
+  margin-bottom: 50px;
+  border-bottom: 1px solid black;
+  font-weight: normal;
+}
+
+.quantity-field {
+  min-height: 125px !important;
+}
+
+.quantity-field input {
+  position: relative;
+  right: 0;
+  width: 30%;
+  display: inline;
+}
+

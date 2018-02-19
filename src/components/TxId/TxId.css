@@ -19,7 +19,7 @@
 
 .tx-container .copied-container {
   position: absolute;
-  background-color: rgba(0, 0, 0, .6);
+  background-color: rgba(0, 0, 0, .75);
   color: white;
   top: 0;
   left: 0;
