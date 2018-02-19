@@ -8,6 +8,8 @@ import '../../knight-theme/responsive.css'
 
 import './App.css'
 
+import ScrollToTop from '../../components/ScrollToTop/ScrollToTop'
+
 import ClaimPage from '../ClaimPage/ClaimPage'
 import SendPage from '../SendPage/SendPage'
 import LandingPage from '../LandingPage/LandingPage'
@@ -19,19 +21,21 @@ import { net, contractScriptHash } from '../../AppConfig'
 const App = () => (
   <div>
     <Router>
-      <Switch>
-        <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-        />
-        <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-        />
-        <Route path='/about' render={ props => <AboutPage { ...props } /> }
-        />
-        <Route path='/send' render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-        />
-        <Route
-          render={ props => <LandingPage /> }
-        />
-      </Switch>
+      <ScrollToTop>
+        <Switch>
+          <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+          />
+          <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+          />
+          <Route path='/about' render={ props => <AboutPage { ...props } /> }
+          />
+          <Route path='/send' render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+          />
+          <Route
+            render={ props => <LandingPage /> }
+          />
+        </Switch>
+      </ScrollToTop>
     </Router>
   </div>
 )
