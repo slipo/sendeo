@@ -38,20 +38,15 @@ class PreviousSends extends Component {
 
             <h6>If a deposit has not been claimed after 7 days, you can come to this page and rescind your send.</h6>
 
-            <div className='row'>
-              <div className='col-sm-6 col-sm-offset-3 wow fadeInLeft delay-05s'>
+            { extensionState.address &&
+              <OwnedEscrowList
+                address={ extensionState.address }
+                contractScriptHash={ contractScriptHash }
+                net={ net }
+              />
+            }
 
-                { extensionState.address &&
-                  <OwnedEscrowList
-                    address={ extensionState.address }
-                    contractScriptHash={ contractScriptHash }
-                    net={ net }
-                  />
-                }
-
-                <div className='text-center'><Link to='/'><i className='fa fa-fw fa-arrow-left' /> Go back to the Send Page</Link></div>
-              </div>
-            </div>
+            <div className='text-center'><Link to='/'><i className='fa fa-fw fa-arrow-left' /> Go back to the Send Page</Link></div>
           </div>
         </section>
       </div>

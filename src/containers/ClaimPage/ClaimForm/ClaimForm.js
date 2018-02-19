@@ -4,7 +4,9 @@ import {
   Button,
   FormControl,
   FormGroup,
+  HelpBlock,
 } from 'react-bootstrap'
+import { wallet } from '@cityofzion/neon-js'
 import Modal from 'react-modal'
 import ReceivedSuccessModal from './ReceivedSuccessModal/ReceivedSuccessModal'
 import { neonJsClaim } from '../../../lib/neonWrappers'
@@ -25,19 +27,24 @@ class ClaimForm extends Component {
     }
   }
 
-  isValidDestinationAddress = () => {
-    if (this.state.destinationAddress && this.state.destinationAddress.length > 0) {
-      return 'success'
-    }
-
-    return 'error'
-  };
-
-  handleChangeToDestinationAddress = (event) => {
+  isValidDestinationAddress = (event) => {
     this.setState({
       destinationAddress: event.target.value,
-      destinationAddressIsValid: true,
     })
+
+    if (wallet.isAddress(event.target.value)) {
+      if (this.state.destinationAddressIsValid !== true) {
+        this.setState({
+          destinationAddressIsValid: true,
+        })
+      }
+    }
+
+    if (this.state.destinationAddressIsValid !== false) {
+      this.setState({
+        destinationAddressIsValid: false,
+      })
+    }
   };
 
   sendAssets = () => {
@@ -82,7 +89,7 @@ class ClaimForm extends Component {
   }
 
   render() {
-    const { txId } = this.state
+    const { txId, destinationAddress, destinationAddressIsValid } = this.state
 
     const {
       assetReceived,
@@ -94,17 +101,18 @@ class ClaimForm extends Component {
         <form>
           <FormGroup
             controlId='claimForm'
-            validationState={ this.isValidDestinationAddress() }
+            className='claim-form-input-container'
           >
             <FormControl
               type='text'
-              value={ this.state.destinationAddress }
+              value={ destinationAddress }
               placeholder='Public Address'
-              onChange={ this.handleChangeToDestinationAddress }
+              onChange={ (event) => this.isValidDestinationAddress(event) }
               bsSize='large'
               autoFocus
               onFocus={ this.handleInputFocus }
             />
+            { !destinationAddressIsValid && <HelpBlock className='text-danger'>Please use a valid NEO address.</HelpBlock> }
           </FormGroup>
 
           <div className='button-container'>
@@ -112,7 +120,7 @@ class ClaimForm extends Component {
               bsStyle='primary'
               bsSize='large'
               block
-              disabled={ !this.state.destinationAddressIsValid || this.state.status === 'loading' }
+              disabled={ !destinationAddressIsValid || this.state.status === 'loading' }
               onClick={ () => this.sendAssets() }
             >Claim Your { amountReceived } { assetReceived }</Button>
             <p className='text-center terms-text'><small>By using Sendeo, you acknowledge that you are using beta software, at your own risk.</small></p>

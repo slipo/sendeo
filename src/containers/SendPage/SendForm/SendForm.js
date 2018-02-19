@@ -95,7 +95,7 @@ class SendForm extends Component {
         scriptHash: contractScriptHash,
         operation: 'deposit',
         arg1: u.reverseHex(escrowAccount.scriptHash),
-        arg2: u.str2hexstring(this.state.messageValue),
+        arg2: this.state.messageValue ? u.str2hexstring(this.state.messageValue) : '',
         assetType: this.state.assetType,
         assetAmount: this.state.amountToSend,
       },
@@ -106,7 +106,7 @@ class SendForm extends Component {
   }
 
   handleNeolinkResponse = (event) => {
-    console.log(event)
+    console.log('NEOLink Response: ', event)
     if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
       this.setState({
         txId: event.data.result.txid,

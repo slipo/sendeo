@@ -13,3 +13,7 @@
   text-align: right;
   margin: 50px 0 0;
 }
+
+.claim-form-input-container {
+  min-height: 100px;
+}

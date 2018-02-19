@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { u } from '@cityofzion/neon-js'
 
 import RescindButton from './RescindButton/RescindButton'
+import TxId from '../../../../components/TxId/TxId'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../../lib/const'
 import { neonGetTxInfo, neonGetTxAssets } from '../../../../lib/neonWrappers'
 
@@ -72,13 +73,13 @@ class OwnedEscrowListRow extends Component {
     } else {
       return (
         <tr key={ txId }>
-          <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }>{u.reverseHex(txId)}</td>
+          <td>{created}</td>
+          <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }><TxId txId={ txId } /></td>
           <td>
             { assets[GAS_ASSET_ID] > 0 && <div>{ assets[GAS_ASSET_ID] } GAS</div>}
             { assets[NEO_ASSET_ID] > 0 && <div>{ assets[NEO_ASSET_ID] } NEO</div>}
           </td>
           <td>{note}</td>
-          <td>{created}</td>
           <td>{rescindColumn}</td>
         </tr>
       )
