@@ -95,7 +95,7 @@ class SendForm extends Component {
         scriptHash: contractScriptHash,
         operation: 'deposit',
         arg1: u.reverseHex(escrowAccount.scriptHash),
-        arg2: this.state.messageValue ? u.str2hexstring(this.state.messageValue) : '',
+        arg2: this.state.messageValue ? u.str2hexstring(this.state.messageValue) : ' ',
         assetType: this.state.assetType,
         assetAmount: this.state.amountToSend,
       },
