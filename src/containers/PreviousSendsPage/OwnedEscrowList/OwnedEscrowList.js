@@ -45,6 +45,7 @@ class OwnedEscrowList extends Component {
         rows.push(
           <OwnedEscrowListRow txId={ txId } address={ address } contractScriptHash={ contractScriptHash } net={ net } />
         )
+        return true
       })
     }
 

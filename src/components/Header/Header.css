@@ -1,0 +1,33 @@
+.main-nav-outer {
+  background-color: black;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.main-nav {
+  margin-top: -3px;
+  background-color: black;
+}
+
+.main-nav li a {
+  color: white;
+  font-family: 'Cutive Mono', monospace;
+  letter-spacing: 0.03em;
+  font-size: 1.2em;
+  font-weight: 100;
+}
+
+.main-nav li.small-logo {
+  min-width: 245px;
+}
+
+.main-nav li.small-logo a {
+  margin: 0;
+  margin-top: -10px;
+}
+
+.small-logo img {
+  height: 50px;
+}

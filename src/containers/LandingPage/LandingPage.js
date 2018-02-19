@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import Header from '../../components/Header/Header'
+
 import stackedLogo from '../../images/sendeo-logo-stacked.png'
 import './LandingPage.css'
 
@@ -8,7 +8,6 @@ class LandingPage extends Component {
   render() {
     return (
       <div>
-        <Header />
         <section className='main-section'>
           <div className='container text-center'>
             <figure className='logo-image-container animated fadeInDown delay-07s'>

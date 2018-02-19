@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 
 import OwnedEscrowList from './OwnedEscrowList/OwnedEscrowList'
 import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
-import Header from '../../components/Header/Header'
 
 import './PreviousSendsPage.css'
 
@@ -31,7 +30,6 @@ class PreviousSends extends Component {
 
     return (
       <div>
-        <Header />
         <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
 
         <section className='main-section'>

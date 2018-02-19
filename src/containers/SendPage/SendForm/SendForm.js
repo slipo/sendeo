@@ -140,7 +140,7 @@ class SendForm extends Component {
       assetType,
       amountToSend,
       amountToSendIsValid,
-      message,
+      messageValue,
       depositSuccess,
       escrowPrivateKey,
     } = this.state
@@ -194,7 +194,7 @@ class SendForm extends Component {
                 placeholder='Attach a message? (optional)'
                 bsSize='large'
                 className='text-right'
-                value={ this.state.messageValue } onChange={ evt => this.updateMessageValue(evt) }
+                value={ messageValue } onChange={ evt => this.updateMessageValue(evt) }
               />
             </FormGroup>
           </div>

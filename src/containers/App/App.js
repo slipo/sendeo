@@ -9,7 +9,8 @@ import '../../knight-theme/responsive.css'
 import './App.css'
 
 import ScrollToTop from '../../components/ScrollToTop/ScrollToTop'
-
+import Header from '../../components/Header/Header'
+import Footer from '../../components/Footer/Footer'
 import ClaimPage from '../ClaimPage/ClaimPage'
 import SendPage from '../SendPage/SendPage'
 import LandingPage from '../LandingPage/LandingPage'
@@ -18,10 +19,18 @@ import AboutPage from '../AboutPage/AboutPage'
 
 import { net, contractScriptHash } from '../../AppConfig'
 
-const App = () => (
+const DefaultLayout = ({ children }) => (
   <div>
-    <Router>
-      <ScrollToTop>
+    <Header />
+    {children}
+    <Footer />
+  </div>
+)
+
+const App = () => (
+  <Router>
+    <ScrollToTop>
+      <DefaultLayout>
         <Switch>
           <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
           />
@@ -35,9 +44,9 @@ const App = () => (
             render={ props => <LandingPage /> }
           />
         </Switch>
-      </ScrollToTop>
-    </Router>
-  </div>
+      </DefaultLayout>
+    </ScrollToTop>
+  </Router>
 )
 
 export default App

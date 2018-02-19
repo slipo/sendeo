@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 import SendForm from './SendForm/SendForm'
 import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
-import Header from '../../components/Header/Header'
 
 import './SendPage.css'
 
@@ -30,7 +29,6 @@ class SendPage extends Component {
 
     return (
       <div>
-        <Header />
         <CheckLoggedIn setExtensionState={ this.setExtensionState } extensionState={ extensionState } />
 
         <section className='main-section'>
