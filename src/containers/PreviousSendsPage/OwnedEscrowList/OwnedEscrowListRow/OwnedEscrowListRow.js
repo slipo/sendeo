@@ -74,7 +74,7 @@ class OwnedEscrowListRow extends Component {
       return (
         <tr key={ txId }>
           <td>{created}</td>
-          <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }><TxId txId={ txId } /></td>
+          <td style={ { 'maxWidth': '100px', 'overflow': 'hidden' } }><TxId txId={ u.reverseHex(txId) } /></td>
           <td>
             { assets[GAS_ASSET_ID] > 0 && <div>{ assets[GAS_ASSET_ID] } GAS</div>}
             { assets[NEO_ASSET_ID] > 0 && <div>{ assets[NEO_ASSET_ID] } NEO</div>}
