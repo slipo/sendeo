@@ -43,7 +43,7 @@ class OwnedEscrowList extends Component {
     if (previousSends) {
       previousSends.map(txId => {
         rows.push(
-          <OwnedEscrowListRow key='txId' txId={ txId } address={ address } contractScriptHash={ contractScriptHash } net={ net } />
+          <OwnedEscrowListRow key={ txId } txId={ txId } address={ address } contractScriptHash={ contractScriptHash } net={ net } />
         )
         return true
       })
@@ -59,11 +59,11 @@ class OwnedEscrowList extends Component {
       <table className='table table-striped table-hover'>
         <thead>
           <tr>
-            <th>Created</th>
-            <th>TxID</th>
+            <th style={ { 'maxWidth': '175px' } }>TxID</th>
+            <th style={ { 'maxWidth': '175px' } }>Created</th>
             <th>Amount</th>
             <th>Note</th>
-            <th>Rescind</th>
+            <th className='text-right'>Rescind</th>
           </tr>
         </thead>
         <tbody>

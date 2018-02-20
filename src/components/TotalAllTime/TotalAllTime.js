@@ -46,7 +46,7 @@ class TotalAllTime extends Component {
     const { totalAllTimeNeo, totalAllTimeGas, errorMsg } = this.state
     let content = ''
 
-    if (errorMsg === '' && totalAllTimeNeo > 0 || totalAllTimeGas > 0) {
+    if (errorMsg === '' && (totalAllTimeNeo > 0 || totalAllTimeGas > 0)) {
       content = (
         <h4>Proudly facilitating the transfer of {totalAllTimeNeo} NEO and {totalAllTimeGas} GAS</h4>
       )
