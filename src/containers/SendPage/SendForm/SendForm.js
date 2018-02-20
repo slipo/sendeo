@@ -89,13 +89,18 @@ class SendForm extends Component {
     const escrowAccount = new wallet.Account()
     this.setState({ escrowPrivateKey: escrowAccount.WIF })
 
+    let message = this.state.messageValue
+    if (!message) {
+      message = ' '
+    }
+
     window.postMessage({
       type: 'NEOLINK_SEND_INVOKE',
       text: {
         scriptHash: contractScriptHash,
         operation: 'deposit',
         arg1: u.reverseHex(escrowAccount.scriptHash),
-        arg2: this.state.messageValue ? u.str2hexstring(this.state.messageValue) : ' ',
+        arg2: u.str2hexstring(message),
         assetType: this.state.assetType,
         assetAmount: this.state.amountToSend,
       },
