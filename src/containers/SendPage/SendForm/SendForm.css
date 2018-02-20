@@ -33,3 +33,24 @@
   display: inline;
 }
 
+.form-container .checkbox {
+  margin: 10px 40px;
+}
+
+.form-container input[type=checkbox] {
+  -ms-transform: scale(1.5);
+  -moz-transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  -o-transform: scale(1.5);
+  padding-right: 10px;
+  margin-top: 15px;
+}
+
+.form-container .checkbox label {
+  padding-right: 20px;
+}
+
+.form-container .checkbox small {
+  left: 15px;
+  position: relative;
+}

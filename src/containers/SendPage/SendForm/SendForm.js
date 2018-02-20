@@ -139,6 +139,12 @@ class SendForm extends Component {
     window.removeEventListener('message', this.handleNeolinkResponse)
   }
 
+  handleAcceptanceChange(event) {
+    this.setState({
+      acceptance: !this.state.acceptance,
+    })
+  }
+
   render() {
     const {
       txId,
@@ -148,6 +154,7 @@ class SendForm extends Component {
       messageValue,
       depositSuccess,
       escrowPrivateKey,
+      acceptance,
     } = this.state
 
     const {
@@ -226,10 +233,16 @@ class SendForm extends Component {
               bsStyle='success'
               bsSize='large'
               block
-              disabled={ !amountToSendIsValid || !neoLinkConnected || !isLoggedIn }
+              disabled={ !amountToSendIsValid || !neoLinkConnected || !isLoggedIn || !acceptance }
               onClick={ () => this.initiateDeposit() }
             >Deposit Now</Button>
-            <p className='text-center terms-text'><small>By using Sendeo, you acknowledge that you are using beta software, at your own risk.</small></p>
+
+            <div className='checkbox text-left'>
+              <label>
+                <input type='checkbox' name='acceptance' onClick={ this.handleAcceptanceChange.bind(this) } />
+                <small>By using Sendeo, you accept that you are using beta software, at your own risk.</small>
+              </label>
+            </div>
           </div>
 
           <Modal isOpen={ depositSuccess } >
