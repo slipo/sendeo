@@ -44,7 +44,6 @@ class CheckLoggedIn extends Component {
     let statusText
     let statusClass
 
-    console.log('extensionState', extensionState)
     if (!isLoading) {
       if (extensionState.isLoggedIn === true) {
         statusClass = 'success'

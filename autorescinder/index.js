@@ -25,14 +25,12 @@ neonGetUnspent(apiEndpoint, contractScriptHash)
     const tmpSenderAccount = new neonJs.wallet.Account()
 
     for (const vin of unspent) {
-      console.log(vin.txid)
       neonGetAddressOfTx(apiEndpoint, vin.txid)
         .then(address => {
-          console.log(`${vin.txid} -> ${address}`)
           neonJsClaim(address, tmpSenderAccount.WIF, net, contractScriptHash, vin.txid)
         })
     }
   })
   .catch(e =>
-    console.log('ERROR', e.message)
+    console.error('Error getting unspent', e.message)
   )

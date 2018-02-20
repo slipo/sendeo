@@ -18,7 +18,7 @@ class GetBalanceOf extends Component {
               return this.props.setBalanceState(assets, txRes.spent, txRes.created, txRes.note)
             })
             .catch((e) => {
-              console.log(e)
+              console.error('Error getting balance', e)
             })
         } else {
           this.props.setBalanceState(null)
@@ -26,7 +26,7 @@ class GetBalanceOf extends Component {
       })
       .catch((e) => {
         this.props.setBalanceState(null)
-        console.log(e)
+        console.error('Error getting balance', e)
       })
   }
 

@@ -111,7 +111,6 @@ class SendForm extends Component {
   }
 
   handleNeolinkResponse = (event) => {
-    console.log('NEOLink Response: ', event)
     if (event.data && event.data.type === 'NEOLINK_SEND_INVOKE_RESPONSE') {
       this.setState({
         txId: event.data.result.txid,

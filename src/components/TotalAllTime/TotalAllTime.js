@@ -17,7 +17,6 @@ class TotalAllTime extends Component {
 
     neonGetTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
       .then(gasResponse => {
-        console.log(gasResponse)
         if (gasResponse.result) {
           gasAllTime = u.fixed82num(gasResponse.result)
           return neonGetTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
@@ -26,7 +25,6 @@ class TotalAllTime extends Component {
         }
       })
       .then(neoResponse => {
-        console.log(neoResponse)
         if (neoResponse.result) {
           this.setState({
             totalAllTimeNeo: u.fixed82num(neoResponse.result),
@@ -37,7 +35,7 @@ class TotalAllTime extends Component {
         }
       })
       .catch((e) => {
-        console.log(e)
+        console.error('Error getting all time stats', e)
         this.setState({
           errorMsg: e.message,
         })

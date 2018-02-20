@@ -47,7 +47,7 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
       const invoke = {
         scriptHash: contractScriptHash,
       }
-      console.log('invoke setup')
+
       const txConfig = {
         type: 128,
         version: 0,
@@ -72,7 +72,6 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
       })
     })
     .then((c) => {
-      console.log('Config object just before sending', c)
       signedTx = c.tx
 
       const contractScriptSigning = {
@@ -89,7 +88,6 @@ export function neonJsClaim(destinationAddress, escrowPrivateKey, net, contractS
     })
     .then((res) => {
       if (res.result === true) {
-        console.log('res,', res)
         res.txid = signedTx.hash
       }
       return res
@@ -172,7 +170,6 @@ export function neonGetTxHistory(keyPrefix, address, contractScriptHash, net) {
     .then((url) => {
       return query.execute(url)
         .then(res => {
-          console.log(res)
           let result = false
           if (res.result) {
             result = deserializeArray(res.result)
