@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import stackedLogo from '../../images/sendeo-logo-stacked.png'
 import './LandingPage.css'
+import TotalAllTime from '../../components/TotalAllTime/TotalAllTime'
 
 class LandingPage extends Component {
   render() {
@@ -15,6 +16,7 @@ class LandingPage extends Component {
             </figure>
             <figure className='animated fadeInLeft delay-07s'>
               <h3>The easiest way to share the NEO blockchain</h3>
+              <TotalAllTime />
             </figure>
 
             <figure className='video-container animated fadeInRight delay-07s'>

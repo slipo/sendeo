@@ -11,13 +11,13 @@ class AboutPage extends Component {
           <h6>Our tiny little attempt at giving back to the NEO ecosystem.</h6>
           <div className='row'>
             <div className='col-sm-6 col-sm-offset-3 wow fadeInLeft delay-05s'>
-              <p className='lead'>Help a Sister Out</p>
+              <p className='lead black'>Help a Sister Out</p>
               <p>I wanted to send my sister some NEO but we got stuck while I waited for her to install a wallet and give me an address.
               It occurred to me that she would be much more inclined to install NEON if she knew she had NEO waiting for her.</p>
               <br />
               <p>Sendeo is my effort at solving that problem. It also serves as a great way for me to learn how to program and develop on the blockchain. Something I beleive whole heartedly in.</p>
               <br />
-              <p className='lead'>Silas</p>
+              <p className='lead black'>Silas</p>
               <p>The man, the myth. Aspiring core developer on NeoLink, NEO, NEON, and everything else.</p>
             </div>
           </div>

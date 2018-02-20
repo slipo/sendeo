@@ -72,3 +72,8 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0;
   transition: visibility 0s .7s, opacity .7s linear;
 }
+
+.black {
+  color: black;
+  font-weight: 700;
+}

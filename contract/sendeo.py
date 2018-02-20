@@ -67,7 +67,7 @@ def Main(operation, args):
                 if current_time < minimum_time:
                     return False
 
-            # We have a least one. We'll keep checking if there are more.
+            # We have at least one. We'll keep checking if there are more.
             print('That input was valid')
             valid = True
 
