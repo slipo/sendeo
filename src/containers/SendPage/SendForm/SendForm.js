@@ -252,6 +252,7 @@ class SendForm extends Component {
                 assetType={ assetType }
                 amountSent={ amountToSend }
                 escrowPrivateKey={ escrowPrivateKey }
+                message={ messageValue }
               />
             }
           </Modal>
