@@ -21,15 +21,15 @@ class ClaimForm extends Component {
     this.state = {
       destinationAddress: '',
       destinationAddressIsValid: false,
-      status: '',
-      errorMsg: '',
-      assets: null,
+      resultTxId: false,
+      resultTxStatus: '',
     }
   }
 
   isValidDestinationAddress = (event) => {
     this.setState({
       destinationAddress: event.target.value,
+      resultTxStatus: '',
     })
 
     if (wallet.isAddress(event.target.value)) {
@@ -49,8 +49,8 @@ class ClaimForm extends Component {
 
   sendAssets = () => {
     this.setState({
-      txId: '',
-      status: 'loading',
+      resultTxId: '',
+      resultTxStatus: 'loading',
       errorMsg: '',
     })
 
@@ -61,26 +61,25 @@ class ClaimForm extends Component {
       .then((res) => {
         if (res.result === true) {
           this.setState({
-            txId: res.txid,
-            status: 'success',
-            errorMsg: '',
+            resultTxId: res.txid,
+            resultTxStatus: 'success',
           })
         } else {
           this.setState({
-            txId: '',
-            status: 'error',
+            resultTxStatus: 'error',
             errorMsg: 'NEO node returned false, but no error message.',
           })
+          console.error('Error making claim but no error message')
         }
 
         return res
       })
       .catch((e) => {
         this.setState({
-          txId: '',
           status: 'error',
           errorMsg: e.message,
         })
+        return console.error('Error making claim', e)
       })
   }
 
@@ -89,53 +88,71 @@ class ClaimForm extends Component {
   }
 
   render() {
-    const { txId, destinationAddress, destinationAddressIsValid } = this.state
+    const {
+      loading,
+      resultTxId,
+      resultTxStatus,
+      destinationAddress,
+      destinationAddressIsValid,
+    } = this.state
 
     const {
       assetReceived,
       amountReceived,
+      message,
     } = this.props
 
     return (
       <div>
-        <form>
-          <FormGroup
-            controlId='claimForm'
-            className='claim-form-input-container'
-          >
-            <FormControl
-              type='text'
-              value={ destinationAddress }
-              placeholder='Public Address'
-              onChange={ (event) => this.isValidDestinationAddress(event) }
-              bsSize='large'
-              autoFocus
-              onFocus={ this.handleInputFocus }
-            />
-            { !destinationAddressIsValid && <HelpBlock className='text-danger'>Please use a valid NEO address.</HelpBlock> }
-          </FormGroup>
+        { !loading &&
+          <span>
+            <form>
+              <FormGroup
+                controlId='claimForm'
+                className='claim-form-input-container'
+              >
+                <FormControl
+                  type='text'
+                  value={ destinationAddress }
+                  placeholder='Public NEO Address'
+                  onChange={ (event) => this.isValidDestinationAddress(event) }
+                  bsSize='large'
+                  autoFocus
+                  onFocus={ this.handleInputFocus }
+                />
+                { !destinationAddressIsValid && <HelpBlock className='text-danger'>Please use a valid NEO address.</HelpBlock> }
+              </FormGroup>
 
-          <div className='button-container'>
-            <Button
-              bsStyle='primary'
-              bsSize='large'
-              block
-              disabled={ !destinationAddressIsValid || this.state.status === 'loading' }
-              onClick={ () => this.sendAssets() }
-            >Claim Your { amountReceived } { assetReceived }</Button>
-            <p className='text-center terms-text'><small>By using Sendeo, you acknowledge that you are using beta software, at your own risk.</small></p>
-          </div>
-        </form>
+              <div className='button-container'>
+                <Button
+                  bsStyle='primary'
+                  bsSize='large'
+                  block
+                  disabled={ !destinationAddressIsValid || resultTxStatus === 'loading' }
+                  onClick={ () => this.sendAssets() }
+                >Claim Your { amountReceived } { assetReceived }</Button>
+              </div>
+            </form>
 
-        <Modal isOpen={ this.state.status === 'success' } >
-          { txId &&
-            <ReceivedSuccessModal
-              txId={ txId }
-              assetReceived={ assetReceived }
-              amountReceived={ amountReceived }
-            />
-          }
-        </Modal>
+            { resultTxStatus === 'error' &&
+              <div className='alert alert-danger text-center'>
+                <h3 className='text-danger'><i className='fa fa-fw fa-exclamation' /> Whoops!</h3>
+                <p>There was an error while trying to send the asset to your wallet.</p>
+              </div>
+            }
+
+            <Modal isOpen={ resultTxStatus === 'success' } >
+              { resultTxId &&
+                <ReceivedSuccessModal
+                  txId={ resultTxId }
+                  assetReceived={ assetReceived }
+                  amountReceived={ amountReceived }
+                  claimMessage={ message }
+                />
+              }
+            </Modal>
+          </span>
+        }
       </div>
     )
   }
@@ -146,6 +163,7 @@ ClaimForm.propTypes = {
   receivedTxId: PropTypes.string.isRequired,
   assetReceived: PropTypes.string.isRequired,
   amountReceived: PropTypes.number.isRequired,
+  message: PropTypes.string,
 }
 
 Modal.setAppElement('#root')

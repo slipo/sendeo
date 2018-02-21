@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { wallet, api } from '@cityofzion/neon-js'
+import { api } from '@cityofzion/neon-js'
 
-import { net, contractScriptHash } from '../../AppConfig'
+import { net } from '../../AppConfig'
 
 class WalletBalance extends Component {
   state = {
@@ -16,7 +16,7 @@ class WalletBalance extends Component {
       address,
     } = this.props
 
-    const filledBalance = api.getBalanceFrom({ address, net }, api.neonDB).then(result => {
+    api.getBalanceFrom({ address, net }, api.neonDB).then(result => {
       this.setState({ neoBalance: result.balance.assets.NEO.balance.c[0], gasBalance: result.balance.assets.GAS.balance.c[0] })
     }).catch(error => {
       console.error(error)

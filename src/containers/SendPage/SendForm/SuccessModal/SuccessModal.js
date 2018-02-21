@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { u } from '@cityofzion/neon-js'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import TxId from '../../../../components/TxId/TxId'
 import { sendeoBaseUrl } from '../../../../AppConfig'
@@ -36,7 +35,7 @@ class SuccessModal extends Component {
       copied,
     } = this.state
 
-    const claimUrl = `${sendeoBaseUrl}claim/${escrowPrivateKey}/${u.reverseHex(txId)}`
+    const claimUrl = `${sendeoBaseUrl}claim/${escrowPrivateKey}/${txId}`
 
     return (
       <div className='modal-outer success-container'>

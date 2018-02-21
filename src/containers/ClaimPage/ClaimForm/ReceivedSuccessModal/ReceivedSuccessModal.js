@@ -9,12 +9,13 @@ class ReceivedSuccessModal extends Component {
       txId,
       assetReceived,
       amountReceived,
+      claimMessage,
     } = this.props
 
     return (
       <div className='modal-outer success-container'>
         <div className='modal-inner'>
-          <h2 className='lead text-center'>Congratulations! Transfer Successful!</h2>
+          <h2 className='lead text-center'>Congratulations!<br />Transfer Successful!</h2>
           <hr />
 
           <h5>You can see the details of your transaction below.</h5>
@@ -25,10 +26,16 @@ class ReceivedSuccessModal extends Component {
             <dd className='text-left'>{ assetReceived }</dd>
             <dt>Quantity:</dt>
             <dd className='text-left'>{ amountReceived }</dd>
+            { claimMessage &&
+              <span>
+                <dt>Message:</dt>
+                <dd className='text-left'>{ claimMessage }</dd>
+              </span>
+            }
           </dl>
           <hr />
 
-          <p className='text-center'><a href={ `/send?asset=${assetReceived}` }>Now you got some, click here to send it to somebody else. :)</a></p>
+          <p className='text-center'><a href={ `/send?asset=${assetReceived}` }>Now that you got some, click here to send it to somebody else. :)</a></p>
         </div>
       </div>
     )
@@ -39,6 +46,7 @@ ReceivedSuccessModal.propTypes = {
   txId: PropTypes.string.isRequired,
   amountReceived: PropTypes.number.isRequired,
   assetReceived: PropTypes.string.isRequired,
+  claimMessage: PropTypes.string,
 }
 
 export default ReceivedSuccessModal
