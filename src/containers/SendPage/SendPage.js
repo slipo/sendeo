@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import SendForm from './SendForm/SendForm'
 import CheckLoggedIn from '../../components/CheckLoggedIn/CheckLoggedIn'
+import WalletBalance from '../../components/WalletBalance/WalletBalance'
 
 import './SendPage.css'
 
@@ -68,6 +69,7 @@ class SendPage extends Component {
               </div>
               <figure className='col-sm-5 text-right wow fadeInUp delay-02s form-container'>
                 <h1>So, how much you gonna send?</h1>
+                { extensionState.address && <WalletBalance address={ extensionState.address } /> }
                 <SendForm neoLinkConnected={ extensionState.neoLinkConnected } isLoggedIn={ extensionState.isLoggedIn } />
               </figure>
             </div>
