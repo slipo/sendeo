@@ -14,6 +14,7 @@ class TotalAllTime extends Component {
 
   componentDidMount() {
     let gasAllTime
+    let neoAllTime
 
     neonGetTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
       .then(gasResponse => {
@@ -21,18 +22,20 @@ class TotalAllTime extends Component {
           gasAllTime = u.fixed82num(gasResponse.result)
           return neonGetTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
         } else {
-          throw Error('Failed to retrieve GAS all time statistics', gasResponse)
+          gasAllTime = 0
         }
       })
       .then(neoResponse => {
         if (neoResponse.result) {
-          this.setState({
-            totalAllTimeNeo: u.fixed82num(neoResponse.result),
-            totalAllTimeGas: gasAllTime,
-          })
+          neoAllTime = u.fixed82num(neoResponse.result)
         } else {
-          throw Error('Failed to retrieve NEO all time statistics', neoResponse)
+          neoAllTime = 0
         }
+
+        this.setState({
+          totalAllTimeNeo: neoAllTime,
+          totalAllTimeGas: gasAllTime,
+        })
       })
       .catch((e) => {
         console.error('Error getting all time stats', e)
