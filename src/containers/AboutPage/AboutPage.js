@@ -7,7 +7,7 @@ class AboutPage extends Component {
     return (
       <section className='main-section'>
         <div className='container'>
-          <h2>About Sendeo</h2>
+          <h2 className='page-title'>About Sendeo</h2>
           <h6>Our tiny little attempt at giving back to the NEO ecosystem.</h6>
           <div className='row'>
             <div className='col-sm-6 col-sm-offset-3 wow fadeInLeft delay-05s'>

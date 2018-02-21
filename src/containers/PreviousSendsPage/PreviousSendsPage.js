@@ -34,7 +34,7 @@ class PreviousSends extends Component {
 
         <section className='main-section'>
           <div className='container'>
-            <h2>Here Is a List of Your Previous Sends</h2>
+            <h2 className='page-title'>Here Is a List of Your Previous Sends</h2>
 
             <h6>If a deposit has not been claimed after 7 days, you can come to this page and rescind your send.</h6>
 
@@ -49,7 +49,7 @@ class PreviousSends extends Component {
                 }
 
                 <hr />
-                <div className='text-center'><Link to='/'><i className='fa fa-fw fa-arrow-left' /> Go back to the Send Page</Link></div>
+                <div className='text-center'><Link to='/send'><i className='fa fa-fw fa-arrow-left' /> Go back to the Send Page</Link></div>
               </div>
             </div>
           </div>

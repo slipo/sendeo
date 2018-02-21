@@ -46,18 +46,16 @@ class OwnedEscrowListRow extends Component {
     const { address, contractScriptHash, net, txId } = this.props
 
     let rescindColumn
-    if (spent) {
-      rescindColumn = <div>Already claimed/rescinded</div>
-    } else if (canRescind) {
-      rescindColumn = <RescindButton contractScriptHash={ contractScriptHash } net={ net } address={ address } txId={ u.reverseHex(txId) } />
+    if (!canRescind) {
+      rescindColumn = <div><i>Unavailable</i></div>
     } else {
-      rescindColumn = <div>Not Yet</div>
+      rescindColumn = <RescindButton contractScriptHash={ contractScriptHash } net={ net } address={ address } txId={ u.reverseHex(txId) } />
     }
 
     if (errorMsg !== '') {
       return (
         <tr>
-          <td colSpan='5' className='text-center primary'>
+          <td colSpan='5' className='text-center danger'>
             ERROR: { errorMsg }
           </td>
         </tr>
@@ -65,7 +63,7 @@ class OwnedEscrowListRow extends Component {
     } else if (isLoading) {
       return (
         <tr>
-          <td colSpan='5' className='text-center primary'>
+          <td colSpan='5' className='text-center'>
             <i className='fa fa-fw fa-spin fa-spinner' /> Checking wallet for previous sends...
           </td>
         </tr>

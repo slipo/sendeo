@@ -24,10 +24,11 @@ class TxId extends Component {
 
   render() {
     const { txId } = this.props
+    const { copied, fadeOut } = this.state
 
     return (
       <div className='tx-container'>
-        { this.state.copied && <div className={ `copied-container ${this.state.fadeOut ? 'fadeOut' : ''}` }>Copied to Clipboard</div> }
+        { copied && <div className={ `copied-container ${fadeOut ? 'fadeOut' : ''}` }>Copied to Clipboard</div> }
 
         <a href={ `${neoScanBaseUrl}${txId}` } target='_blank'>
           { txId }
