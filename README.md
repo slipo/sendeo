@@ -18,9 +18,7 @@ The dApp website is run client side and NeoLink is used so you never have to ent
 
 Download [this version of NeoLink](https://github.com/slipo/neolink/tree/dapp) to be sure it works and follow the installation instructions.
 
-Visit the dApp (TODO: add link) to deposit you funds.
-
-You'll get a link which you can send to the recipient.
+Visit [Sendeo](http://sendeo.surge.sh/) and watch the video or [watch it on YouTube](https://www.youtube.com/watch?v=jMUIxWVXYdw)
 
 # History
 
