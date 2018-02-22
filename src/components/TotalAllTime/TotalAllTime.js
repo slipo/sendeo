@@ -51,7 +51,7 @@ class TotalAllTime extends Component {
 
     if (errorMsg === '' && (totalAllTimeNeo > 0 || totalAllTimeGas > 0)) {
       content = (
-        <h4>Proudly facilitating the transfer of {totalAllTimeNeo} NEO and {totalAllTimeGas} GAS</h4>
+        <h3 className='page-title'>Proudly facilitating the transfer of <strong>{totalAllTimeNeo} NEO</strong> and <strong>{totalAllTimeGas} GAS</strong></h3>
       )
     }
 
