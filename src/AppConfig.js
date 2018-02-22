@@ -4,4 +4,4 @@ export const net = 'http://testnet-api.wallet.cityofzion.io'
 export const contractScriptHash = '6cce32b8f81f2726386ac0cd1018c992505815cb'
 
 export const neoScanBaseUrl = 'https://neoscan-testnet.io/transaction/'
-export const sendeoBaseUrl = 'https://sendeo.io/'
+export const sendeoBaseUrl = 'http://sendeo.surge.sh/'

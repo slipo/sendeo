@@ -36,7 +36,7 @@ class PreviousSends extends Component {
           <div className='container'>
             <h2 className='page-title'>Here Is a List of Your Previous Sends</h2>
 
-            <h6>If a deposit has not been claimed after 7 days, you can come to this page and rescind your send.</h6>
+            <h6>If a deposit has not been claimed after 7 days, Sendeo will automatically send it back to you. We got ya.</h6>
 
             <div className='row'>
               <div className='col-sm-10 col-sm-offset-1'>

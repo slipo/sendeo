@@ -9,6 +9,7 @@ import '../../knight-theme/responsive.css'
 import './App.css'
 
 import ScrollToTop from '../../components/ScrollToTop/ScrollToTop'
+import ForceHttp from '../../components/ForceHttp/ForceHttp'
 import Header from '../../components/Header/Header'
 import Footer from '../../components/Footer/Footer'
 import ClaimPage from '../ClaimPage/ClaimPage'
@@ -29,23 +30,25 @@ const DefaultLayout = ({ children }) => (
 
 const App = () => (
   <Router>
-    <ScrollToTop>
-      <DefaultLayout>
-        <Switch>
-          <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-          />
-          <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-          />
-          <Route path='/about' render={ props => <AboutPage { ...props } /> }
-          />
-          <Route path='/send' render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
-          />
-          <Route
-            render={ props => <LandingPage /> }
-          />
-        </Switch>
-      </DefaultLayout>
-    </ScrollToTop>
+    <ForceHttp>
+      <ScrollToTop>
+        <DefaultLayout>
+          <Switch>
+            <Route path='/claim/:key/:receivedTxId' render={ props => <ClaimPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+            />
+            <Route path='/previousSends' render={ props => <PreviousSendsPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+            />
+            <Route path='/about' render={ props => <AboutPage { ...props } /> }
+            />
+            <Route path='/send' render={ props => <SendPage net={ net } contractScriptHash={ contractScriptHash } { ...props } /> }
+            />
+            <Route
+              render={ props => <LandingPage /> }
+            />
+          </Switch>
+        </DefaultLayout>
+      </ScrollToTop>
+    </ForceHttp>
   </Router>
 )
 
