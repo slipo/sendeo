@@ -20,7 +20,7 @@ The [autorescind code](/autorescinder/) is an optional addon to the contract. It
 
 ### dApp website
 
-The [dApp website](/src/)) features a variety of interesting ways to use neon-js to interact with storage, transactions and the contract itself. Additionally it integrates with the new, in-development React version of NeoLink.
+The [dApp website](/src/) features a variety of interesting ways to use neon-js to interact with storage, transactions and the contract itself. Additionally it integrates with the new, in-development React version of NeoLink.
 
 ## Overall impact and importance to ecosystem
 
