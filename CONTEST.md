@@ -4,9 +4,11 @@ This is our entry into the dApp contest. Information on our project in terms of 
 
 ## Smart contract application novelty and technical impressiveness
 
+This project contains three main parts, each in separate directories in the repository.
+
 ### Contract
 
-The smart contract was painstakingly crafted.
+The [smart contract](/contract/) was painstakingly crafted.
 
 Originally it followed the two step withdrawal method. This method was deemed to be less than secure as the verification could pass allowing the assets to leave and the invocation could fail, meaning the user's balance would stay the same.
 
@@ -14,11 +16,11 @@ The contract was completely rewritten to give the escrow account ownership to th
 
 ### Autorescinder
 
-The autorescind code is an optional addon to the contract. It runs on cron and sends out any deposits that have sat in the contract for at least 7 days. The contract allows any address to make these withdrawals but the destination address must be the original sender's address. We think this is a nice technical feature to showcase because generally with blockchain a user must initiate any action. We, of course, take advantage of NEO's zero fee (under 10 GAS) for invocations. If this changes this feature could break. However, we have a manual rescind button in the dApp website as well.
+The [autorescind code](/autorescinder/) is an optional addon to the contract. It runs on cron and sends out any deposits that have sat in the contract for at least 7 days. The contract allows any address to make these withdrawals but the destination address must be the original sender's address. We think this is a nice technical feature to showcase because generally with blockchain a user must initiate any action. We, of course, take advantage of NEO's zero fee (under 10 GAS) for invocations. If this changes this feature could break. However, we have a manual rescind button in the dApp website as well.
 
 ### dApp website
 
-The dApp website features a variety of interesting ways to use neon-js to interact with storage, transactions and the contract itesf. Additionally it integrates with the new, in-development React version of NeoLink.
+The [dApp website](/src/)) features a variety of interesting ways to use neon-js to interact with storage, transactions and the contract itself. Additionally it integrates with the new, in-development React version of NeoLink.
 
 ## Overall impact and importance to ecosystem
 
