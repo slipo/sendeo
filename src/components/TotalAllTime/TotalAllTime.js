@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { u } from '@cityofzion/neon-js'
 
-import { neonGetTotalAllTime } from '../../lib/neonWrappers'
+import * as neonWrappers from '../../lib/neonWrappers'
 import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../lib/const'
 import { net, contractScriptHash } from '../../AppConfig'
 
@@ -16,14 +16,15 @@ class TotalAllTime extends Component {
     let gasAllTime
     let neoAllTime
 
-    neonGetTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
+    neonWrappers.neonGetTotalAllTime(contractScriptHash, GAS_ASSET_ID, net)
       .then(gasResponse => {
         if (gasResponse.result) {
           gasAllTime = u.fixed82num(gasResponse.result)
-          return neonGetTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
         } else {
           gasAllTime = 0
         }
+
+        return neonWrappers.neonGetTotalAllTime(contractScriptHash, NEO_ASSET_ID, net)
       })
       .then(neoResponse => {
         if (neoResponse.result) {
@@ -38,7 +39,6 @@ class TotalAllTime extends Component {
         })
       })
       .catch((e) => {
-        console.error('Error getting all time stats', e)
         this.setState({
           errorMsg: e.message,
         })

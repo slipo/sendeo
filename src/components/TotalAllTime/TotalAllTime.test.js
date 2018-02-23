@@ -2,21 +2,22 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 import TotalAllTime from './TotalAllTime'
-import * as NeonStorageWrappers from '../../../lib/neonWrappers'
-import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../../lib/const'
+import * as NeonStorageWrappers from '../../lib/neonWrappers'
+import { GAS_ASSET_ID, NEO_ASSET_ID } from '../../lib/const'
+import { net, contractScriptHash } from '../../AppConfig'
 
 it('calls neonGetTotalAllTime with proper props', (done) => {
-  NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
+  NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHashParam, assetId, netParam) => {
     return new Promise((resolve, reject) => {
       expect(assetId).toEqual(GAS_ASSET_ID)
-      expect(contractScriptHash).toEqual('TestContract')
-      expect(net).toEqual('TestNet')
+      expect(contractScriptHashParam).toEqual(contractScriptHash)
+      expect(netParam).toEqual(net)
 
-      NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
+      NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHashParam, assetId, netParam) => {
         return new Promise((resolve, reject) => {
           expect(assetId).toEqual(NEO_ASSET_ID)
-          expect(contractScriptHash).toEqual('TestContract')
-          expect(net).toEqual('TestNet')
+          expect(contractScriptHashParam).toEqual(contractScriptHash)
+          expect(netParam).toEqual(net)
           done()
         })
       })
@@ -25,7 +26,7 @@ it('calls neonGetTotalAllTime with proper props', (done) => {
     })
   })
 
-  mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  mount(<TotalAllTime />)
 })
 
 it('shows proper NEO/GAS amounts', async () => {
@@ -41,22 +42,25 @@ it('shows proper NEO/GAS amounts', async () => {
     })
   })
 
-  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime />)
   await Promise.resolve().then()
   expect(wrapper.text().includes('3 GAS')).toEqual(true)
   expect(wrapper.text().includes('2 NEO')).toEqual(true)
 })
 
-it('error on invalid GAS response', async () => {
+it('show 0 on invalid GAS response', async () => {
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
+    NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
+      return new Promise((resolve, reject) => { resolve({ result: '00a3e111' }) })
+    })
     return new Promise((resolve, reject) => { resolve({}) })
   })
-  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime />)
   await Promise.resolve().then()
-  expect(wrapper.state('errorMsg')).not.toEqual('')
+  expect(wrapper.text().includes('0 GAS')).toEqual(true)
 })
 
-it('error on invalid NEO response', async () => {
+it('show 0 on invalid NEO response', async () => {
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => {
       NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
@@ -66,24 +70,24 @@ it('error on invalid NEO response', async () => {
       resolve({ result: '00a3e111' })
     })
   })
-  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime />)
   await Promise.resolve().then()
-  expect(wrapper.state('errorMsg')).not.toEqual('')
+  expect(wrapper.text().includes('0 NEO')).toEqual(true)
 })
 
-it('error shown on exception', async () => {
+it('show nothing on error', async () => {
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => { reject(Error('Error Message')) })
   })
-  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime />)
   await Promise.resolve().then()
-  expect(wrapper.text().includes('Error Message')).toEqual(true)
+  expect(wrapper.text()).toEqual('')
 })
 
 it('defaults to empty', async () => {
   NeonStorageWrappers.neonGetTotalAllTime = jest.fn((contractScriptHash, assetId, net) => {
     return new Promise((resolve, reject) => { resolve({}) })
   })
-  const wrapper = mount(<TotalAllTime contractScriptHash='TestContract' net='TestNet' />)
+  const wrapper = mount(<TotalAllTime />)
   expect(wrapper.text()).toEqual('')
 })

@@ -50,7 +50,7 @@ it('show results on success', async () => {
   expect(wrapper.text().includes('22 NEO')).toEqual(true)
   expect(wrapper.text().includes('NOTE')).toEqual(true)
   expect(wrapper.text().includes('CREATED')).toEqual(true)
-  expect(wrapper.text().includes('Already claimed/rescinded')).toEqual(true)
+  expect(wrapper.text().includes('Unavailable')).toEqual(true)
   expect(wrapper.text().includes('ERROR')).toEqual(false)
 })
 
@@ -115,7 +115,7 @@ it('tells user rescind is not available', async () => {
 
   await Promise.resolve().then()
 
-  expect(wrapper.text().includes('Not Yet')).toEqual(true)
+  expect(wrapper.text().includes('Unavailable')).toEqual(true)
 })
 
 it('shows error on error', async () => {
