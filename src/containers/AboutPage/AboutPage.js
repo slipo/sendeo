@@ -21,6 +21,11 @@ class AboutPage extends Component {
               <p className='lead black'>Made with Love by Slipo and Luke</p>
               <p>We would like to extend our deep and heart felt thanks to the NEO community and all of it's resources and talent
               and developers. We are trying to stand on the shoulders of the giants that came before us. Thank You.</p>
+              <br />
+              <p className='lead black'>100% Open Source and Transparent</p>
+              <p>Security and transparency have been our main priorities while developing Sendeo. To that end, our
+              public <a href='https://github.com/slipo/sendeo' target='_blank' rel='noopener noreferrer'>Sendeo Github Repo</a> is MIT licensed and we
+              invite you to review and improve the code.</p>
             </div>
           </div>
         </div>
