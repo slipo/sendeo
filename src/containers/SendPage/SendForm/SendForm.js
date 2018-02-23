@@ -128,6 +128,10 @@ class SendForm extends Component {
   }
 
   updateMessageValue(event) {
+    if (event.target.value.length > 100) {
+      event.target.value = event.target.value.substring(0, 99)
+    }
+
     this.setState({
       messageValue: event.target.value,
     })
@@ -205,7 +209,8 @@ class SendForm extends Component {
                 placeholder='Attach a message? (optional)'
                 bsSize='large'
                 className='text-right'
-                value={ messageValue } onChange={ evt => this.updateMessageValue(evt) }
+                value={ messageValue }
+                onChange={ evt => this.updateMessageValue(evt) }
               />
             </FormGroup>
           </div>

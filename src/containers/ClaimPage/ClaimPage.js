@@ -89,9 +89,9 @@ class ClaimPage extends Component {
                 </div>
                 <figure className='col-sm-5 text-right wow fadeInUp delay-02s form-container'>
                   { (error || spent) &&
-                    <div className='alert alert-danger text-left'>
-                      <h3 className='text-danger'>Whoops!</h3>
-                      <p className='lead text-danger'>This has already been claimed or is no longer valid. Blockchain don't lie man.</p>
+                    <div className='alert alert-warning text-left'>
+                      <h3 className='text-warning'>Whoops! Claim Not Available</h3>
+                      <p className='lead text-warning'>Either we are still waiting for NEO (likely if you just made the deposit a few seconds ago), this deposit has already been claimed, or you were given a bogus link. Blockchain don't lie man.</p>
                       <p>But please, feel free to head over to the <a href='http://neonwallet.com/' target='_blank' rel='noopener noreferrer' >NEON Wallet</a> site and get yourself setup with a wallet.</p>
                     </div>
                   }
