@@ -167,7 +167,7 @@ class SendForm extends Component {
           { neoLinkConnected !== null && !neoLinkConnected &&
             <div className='alert alert-danger'>
               <h4>NeoLink Not Installed</h4>
-              <p>Please visit <a href='https://github.com/CityOfZion/NeoLink' target='_blank' rel='noopener noreferrer'>https://github.com/CityOfZion/NeoLink</a> and download the Chrome Extension and then refresh this page.</p>
+              <p>Please visit <a href='https://github.com/slipo/neolink/tree/dapp' target='_blank' rel='noopener noreferrer'>https://github.com/slipo/neolink/tree/dapp</a> and download the Chrome Extension and then refresh this page.</p>
             </div>
           }
           { neoLinkConnected !== null && neoLinkConnected && !isLoggedIn &&

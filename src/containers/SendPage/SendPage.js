@@ -42,7 +42,7 @@ class SendPage extends Component {
                     <img src={ neoLogo } alt='NEO logo' />
                   </div>
                   <div className='service-list-col2'>
-                    <h3>1. Login to <a href='https://github.com/CityOfZion/NeoLink' target='_blank' rel='noopener noreferrer'>NeoLink</a></h3>
+                    <h3>1. Login to <a href='https://github.com/slipo/NeoLink/tree/dapp' target='_blank' rel='noopener noreferrer'>NeoLink</a></h3>
                     <p>NeoLink is a browser extension that lets you interact with the NEO blockchain safely and securely.</p>
                   </div>
                 </div>
