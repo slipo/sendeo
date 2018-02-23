@@ -62,8 +62,8 @@ def Main(operation, args):
                     return False
 
                 current_time = GetCurrentTimestamp()
-                two_minutes = 60 * 2
-                minimum_time = time + two_minutes
+                seven_days = 604800
+                minimum_time = time + seven_days
                 if current_time < minimum_time:
                     return False
 

@@ -22,6 +22,5 @@ yarn-debug.log*
 yarn-error.log*
 yarn.lock
 
-contract/*.avm
 contract/*.debug.json
 contract/*/__pycache__/

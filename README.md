@@ -8,7 +8,7 @@
 
 **sendeo** is a dApp designed to help people share NEO and GAS with others unfamiliar with cryptocurrencies. If you've ever wanted to send a crypto gift to somebody who doesn't even know what a wallet is, this dApp's for you.
 
-When you use **sendeo**, you send NEO or GAS into the [smart contract](/contract/sendeo.py). A temporary escrow account is generated and a link with the key is given to you. You then can send that link to the recipient. When they click the link, they're told how cryptocurrencies work and how to securely create an account with [neon-wallet](https://github.com/CityOfZion/neon-wallet) or [NeoLink](https://github.com/CityOfZion/neolink). They then send the money out of the contract using the dApp.
+When you use **sendeo**, you send NEO or GAS into the [smart contract](/contract/sendeo.py). A temporary escrow account is generated and a link with the key is given to you. You then can send that link to the recipient. When they click the link, they're told how cryptocurrencies work and how to securely create an account with [neon-wallet](https://github.com/CityOfZion/neon-wallet) or [NeoLink](https://github.com/slipo/neolink/tree/dapp). They then send the money out of the contract using the dApp.
 
 What if they don't bother to get their gift? After one week everything is automatically returned to the sender's address (Side note: this functionality requires some code to run occaisionally on a server to sweep the assets to the origin accounts. If we ever turn this functionality off, the dApp still has a button for you to manually retrieve your assets).
 

@@ -15,7 +15,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: autorescinder
-            image: gcr.io/[YOUR_PROJECT]/autorescinder:0.1
+            image: gcr.io/[YOUR_PROJECT]/autorescinder:0.2
             args:
               - npm
               - start
